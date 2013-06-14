@@ -1,6 +1,6 @@
 function ROM(){
 	// Pong!
-	this.raw = "6a026b0c6c3f6d0ca2eadab6dcd66e00" + 
+	this.raw = "6a026b0c6c3f6d0ca2eadab6dcd66e00" +
 				"22d4660368026060f015f0073000121a" +
 				"c717770869ffa2f0d671a2eadab6dcd6" +
 				"6001e0a17bfe6004e0a17b02601f8b02" +
@@ -16,13 +16,21 @@ function ROM(){
 				"76fe126ca2f2fe33f265f12964146500" +
 				"d4557415f229d45500ee808080808080" +
 				"800000000000";
-	this.src = null;
+	this.src = null; // Uint8Array of binary data
 
 
 	this.initialize = function(){
-		//var buff = base64DecToArr(this.raw).buffer;
+		var len = this.raw.length / 2,
+			buffer = new ArrayBuffer(len);
 
-		console.log(buff);
+		this.src = new Uint8Array(buffer);
+
+		var j = 0;
+
+		for(i = 0; i < this.raw.length; i += 2){
+			this.src[j] = parseInt(this.raw.slice(i, i+2), 16);
+			j += 1;
+		}
 	}
 }
 

@@ -6,15 +6,21 @@ $(function(){
         rom = new ROM();
 
     rom.initialize();
-    //chip.loadRom(rom);
+    chip.loadRom(rom);
+    chip.initialize();
 
+    chip.fetchOpcode();
+    //animate(chip)
 });
 
 
-
-
-
-
+function animate(chip){
+    function loop(){
+        //chip.draw
+        requestAnimFram(loop);
+    }
+    loop();
+}
 
 // Fallback to setTimeout() if browser does not define requestAnimationFrame
 window.requestAnimFrame = function(){
