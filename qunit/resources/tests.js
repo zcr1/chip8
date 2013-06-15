@@ -45,6 +45,10 @@ test("2NNN", function(){
 	equal(chip.pc, 0x0345, "Calls subroutine at NNN");
 });
 
+
+
+
+
 test("ANNN", function(){
 	chip.opcode = 0xA111;
 	chip.decodeOpcode();

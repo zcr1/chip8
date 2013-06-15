@@ -105,6 +105,12 @@ function Chip8(){
 				break;
 
 			case 0xD000: // DXYN : a lot
+				break;
+			case 0xE000:
+				break;
+			case 0xF000:
+				break;
+
 		}
 	}
 
