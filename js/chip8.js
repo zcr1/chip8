@@ -71,10 +71,40 @@ function Chip8(){
 				this.pc = this.opcode & 0x0FFF;
 				break;
 
+			case 0x3000:
+				break;
+
+			case 0x4000:
+				break;
+
+			case 0x5000:
+				break;
+
+			case 0x6000: // 6XNN: Sets VX to NN
+				this.V[this.opcode & 0x0F00] = this.opcode & 0X00FF;
+				break;
+
+			case 0x7000: // 7XNN: Adds NN to VX
+				this.V[this.opcode & 0x0F00] += this.opcode & 0x00FF;
+				break;
+
+			case 0x8000: // abunch
+
+			case 0x9000:
+
 			case 0xA000: // ANNN: Sets I to the address NNN
 				this.I = this.opcode & 0x0FFF;
 				this.pc += 2;
 				break;
+
+			case 0xB000: // BNNN: Jumps to the address NNN plus V0
+				this.pc = this.opcode & 0x0FFF + this.V[0];
+				break;
+
+			case 0xC000: // CNNN: Sets VX to a random number and NN
+				break;
+
+			case 0xD000: // DXYN : a lot
 		}
 	}
 

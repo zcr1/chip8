@@ -1,8 +1,7 @@
 /*******************************************
 	Unit Tests for the ol' Chipper
 *******************************************/
-module("Opcodes")
-
+module("Opcode")
 
 test("Global pollution", function() {
 	window.pollute = true;
@@ -44,4 +43,11 @@ test("2NNN", function(){
 	chip.decodeOpcode();
 
 	equal(chip.pc, 0x0345, "Calls subroutine at NNN");
+});
+
+test("ANNN", function(){
+	chip.opcode = 0xA111;
+	chip.decodeOpcode();
+
+	equal(chip.I, 0x0111, "Sets Index register to the address NNN");
 });
