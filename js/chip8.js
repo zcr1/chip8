@@ -88,7 +88,22 @@ function Chip8(){
 				this.V[this.opcode & 0x0F00] += this.opcode & 0x00FF;
 				break;
 
-			case 0x8000: // abunch
+			case 0x8000:
+				var x = this.opcode & 0x0F00,
+					y = this.opcode & 0x00F0;
+
+				if (this.opcode & 0xF00F == 0x8000){ // Sets VX = VY
+					this.V[x] = this.V[y];
+				}
+				else if (this.opcode & 0xF00F == 0x8001){ // Sets VX = VX or VY
+					this.V[x] = this.V[x] | this.V[y];
+				}
+				else if (this.opcode & 0xF00F == 0x8002){ // Sets VX = VX and VY
+					this.V[x] = this.V[x] & this.V[y];
+				}
+				else if (this.opcode & 0xF00F == 0x8003){ // Sets VX = VX xor VY
+					this.V[x] = this.V[x] ^ this.V[y];
+				}
 
 			case 0x9000:
 
