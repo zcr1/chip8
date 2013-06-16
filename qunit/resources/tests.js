@@ -48,6 +48,55 @@ test("2NNN", function(){
 
 
 
+test("6XNN", function(){
+	chip.opcode = 0x6345;
+	chip.decodeOpcode();
+
+	equal(chip.V[3], 0x0045, "Sets VX to NN");
+});
+
+test("7XNN", function(){
+	chip.opcode = 0x7945;
+	chip.V[9] = 0x33;
+	chip.decodeOpcode();
+
+	equal(chip.V[9], 0x0078, "Adds NN to VX");
+});
+
+test("8XY0", function(){
+	chip.opcode = 0x8120;
+	chip.V[2] = 0x33;
+	chip.decodeOpcode();
+
+	equal(chip.V[2], chip.V[1], "Sets VX to VY");
+});
+
+test("8XY1", function(){
+	chip.opcode = 0x8121;
+	chip.V[1] = 0x33;
+	chip.V[2] = 0x11;
+	chip.decodeOpcode();
+
+	equal(chip.V[1], 51, "Sets VX to VX or VY");
+});
+
+test("8XY2", function(){
+	chip.opcode = 0x8122;
+	chip.V[1] = 0x33;
+	chip.V[2] = 0x11;
+	chip.decodeOpcode();
+
+	equal(chip.V[1], 17, "Sets VX to VX and VY");
+});
+
+test("8XY3", function(){
+	chip.opcode = 0x8123;
+	chip.V[1] = 0x33;
+	chip.V[2] = 0x11;
+	chip.decodeOpcode();
+
+	equal(chip.V[1], 34, "Sets VX to VX xor VY");
+});
 
 test("ANNN", function(){
 	chip.opcode = 0xA111;
