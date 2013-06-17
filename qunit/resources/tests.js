@@ -254,3 +254,36 @@ test("FX1E", function(){
 
 //FX33
 
+//Stores V0 to VX in memory starting at address I
+test("FX55", function(){
+	chip.opcode = 0xF255;
+
+	chip.V[0] = 0x11;
+	chip.V[1] = 0x22;
+	chip.V[2] = 0x33;
+	chip.I = 5;
+
+	chip.decodeOpcode();
+
+	equal(chip.V[0], chip.memory[5], "Stores V0 to VX in memory starting at I")
+	equal(chip.V[1], chip.memory[5 + 1], "More memory")
+	equal(chip.V[2], chip.memory[5 + 2], "More memory")
+});
+
+//Fills V0 to VX with values from memory starting at address I
+test("FX65", function(){
+	chip.opcode = 0xF265;
+
+	chip.memory[5] = 0x11;
+	chip.memory[6] = 0x22;
+	chip.memory[7] = 0x33;
+	chip.I = 5;
+
+	chip.decodeOpcode();
+
+	equal(chip.V[0], chip.memory[5], "Fills V0 to VX with values from memory starting at address I")
+	equal(chip.V[1], chip.memory[5 + 1], "V1")
+	equal(chip.V[2], chip.memory[5 + 2], "V2")
+});
+
+
