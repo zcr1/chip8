@@ -12,6 +12,7 @@ function Chip8(){
 	this.stack = new Uint8ClampedArray(16);
 	this.sp = 0; // stackpointer
 	this.key = new Uint8ClampedArray(16); // current key state
+	this.fontSet = null;
 	this.delayTimer =  0;
 	this.soundTimer = 0;
 
@@ -20,6 +21,8 @@ function Chip8(){
 		this.opcode = 0;
 		this.I = 0;
 		this.sp = 0;
+
+		this.setFontSet();
 
 		// Clear display
 		// Clear stack
@@ -76,10 +79,21 @@ function Chip8(){
 				break;
 
 			case 0x3000: // 3XNN: Skips the next instruction if VX equals NN
-				
+				if ((this.V[(this.opcode & 0x0F00) >> 8]) == (this.opcode & 0x00FF)){
+					this.pc += 4;
+				}
+				else{
+					this.pc += 2;
+				}
 				break;
 
-			case 0x4000:
+			case 0x4000: // 4XNN: Skips the next instruction if VX equals NN
+				if ((this.V[(this.opcode & 0x0F00) >> 8]) != (this.opcode & 0x00FF)){
+					this.pc += 4;
+				}
+				else{
+					this.pc += 2;
+				}
 				break;
 
 			case 0x5000:
@@ -114,7 +128,7 @@ function Chip8(){
 				}
 				else if (op == 0x0004){ // 8XY4: Adds VY to VX. VF is set to carry
 
-					if (this.V[y] > (0xFF - V[x])){
+					if (this.V[y] > (0xFF - this.V[x])){
 						this.V[15] = 1;
 					}
 					else{
@@ -149,22 +163,28 @@ function Chip8(){
 
 					this.V[x] = this.V[y] - this.V[x];
 				}
-				else if (op == 0x000E){
-
+				else if (op == 0x000E){ // 8XYE: Right shift VX, VF = most significant bit of VX before shift
+					this.V[15] = this.V[x] >> 7;
+					this.V[x] >>= 1;
 				}
 				else{
 					console.log("Unknown opcode");
 				}
 
 				this.pc += 2;
+				break;
 
 			case 0x9000: // 9XY0 Skips the next instruction if VX doesn't equal VY
-				var x = this.opcode & 0x0F00,
-					y = this.opcode & 0x00F0;
+				var x = (this.opcode & 0x0F00) >> 8,
+					y = (this.opcode & 0x00F0) >> 4;
 
 				if (this.V[x] != this.V[y]){
-
+					this.pc += 4;
 				}
+				else{
+					this.pc += 2;
+				}
+				break;
 
 			case 0xA000: // ANNN: Sets I to the address NNN
 				this.I = this.opcode & 0x0FFF;
@@ -172,19 +192,101 @@ function Chip8(){
 				break;
 
 			case 0xB000: // BNNN: Jumps to the address NNN plus V0
-				this.pc = this.opcode & 0x0FFF + this.V[0];
+				this.pc = (this.opcode & 0x0FFF) + this.V[0];
 				break;
 
-			case 0xC000: // CNNN: Sets VX to a random number and NN
+			case 0xC000: // CXNN: Sets VX to a random number and NN
+				var ran = Math.floor(Math.random() * 256);
+
+				this.V[(this.opcode & 0x0F00) >> 8] = ran & (this.opcode & 0x00FF);
+				this.pc += 2;
 				break;
 
 			case 0xD000: // DXYN : a lot
 				break;
+
 			case 0xE000:
+				var x = (this.opcode & 0x0F00) >> 8;
+
+				if ((this.opcode & 0x00FF) == 0x009E){ // EX9E: Skip next instruction if key in VX is pressed
+					if (this.keys[this.V[x]]){
+						this.pc += 4;
+					}
+					else{
+						this.pc += 2;
+					}
+				}
+				else if ((this.opcode & 0x00FF) == 0x00A1){ // EXA1: Skip next instruction if key in VX not pressed
+					if (!this.keys[this.V[x]]){
+						this.pc += 4;
+					}
+					else{
+						this.pc += 2;
+					}					
+				}
+				else console.log("Unknown opcode");
+
 				break;
+
 			case 0xF000:
+				var x = (this.opcode & 0x0F00) >> 8,
+					op = (this.opcode & 0x00FF);
+
+				if (op == 0x0007){ // FX07: Setvs VX to value of delay timer
+					this.V[x] = this.delayTimer;
+				}
+				else if (op == 0x000A){ // FX07: A key press is awaited, and then stored in VX
+
+				}
+				else if (op == 0x0015){ // FX15: Sets the delay timer to VX
+					this.delayTimer = this.V[x];
+				}
+				else if (op == 0x0018){ // FX18: Sets the sound timer to VX
+					this.soundTimer = this.V[x];
+				}
+				else if (op == 0x001E){ // FX1E: Adds VX to I
+					if ((this.I + this.V[x]) > 0xFFF){ 
+						//carry bit
+						this.V[15] = 1;
+					}
+					else{
+						this.V[15] = 0;
+					}
+
+					this.I += this.V[x];
+				}
+				else if (op == 0x0029){ // FX29:
+					// Sets I to the location of the sprite for the character in VX.
+					// Characters 0-F are represented by a 4x5 font
+
+				}
+				else if (op == 0x0033){ // FX33:
+					// Stores the binary-coded decimal representation of VX, with the most significant
+					// of the three digits at the address in I, the middle digiat at I + 1, and the
+					// least significant digits at I + 2.
+				}
+				else if (op == 0x0055){ // FX55: Stores V0 to VX in memory starting at address I
+					for (var i = 0; i < x; i++){
+						this.memory[this.I + i] = this.V[x];
+					}
+					// On the original interpreter, when the operation is done, I = I + X + 1
+					this.I +=  x + 1;
+				}
+				else if (op == 0x0065){ // FX65: Fills V0 to VX with values from memory starting at address I
+					for (var i = 0; i < x; i++){
+						this.V[i] = this.memory[this.I + i];
+					}
+
+					// On the original interpreter, when the operation is done, I = I + X + 1
+					this.I +=  x + 1;
+				}
+				else console.log("Unknown opcode");
+
+				this.pc += 2;
 				break;
+
 			default:
+				this.pc += 2;
 				console.log("Unknown opcode");
 		}
 	}
@@ -227,5 +329,25 @@ function Chip8(){
 
 	this.resetSoundTimer = function(){
 		this.resetTimer = 0;
+	}
+
+	this.setFontSet = function(){
+		this.fontSet = new Uint8Array(
+					[0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
+					0x20, 0x60, 0x20, 0x20, 0x70, // 1
+					0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
+					0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
+					0x90, 0x90, 0xF0, 0x10, 0x10, // 4
+					0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
+					0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
+					0xF0, 0x10, 0x20, 0x40, 0x40, // 7
+					0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
+					0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
+					0xF0, 0x90, 0xF0, 0x90, 0x90, // A
+					0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
+					0xF0, 0x80, 0x80, 0x80, 0xF0, // C
+					0xE0, 0x90, 0x90, 0x90, 0xE0, // D
+					0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
+					0xF0, 0x80, 0xF0, 0x80, 0x80 ]); // F;
 	}
 }
