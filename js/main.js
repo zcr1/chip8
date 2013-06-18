@@ -1,4 +1,4 @@
-// Chip 8 Emulator 
+// Chip 8 Emulator
 "use strict";
 
 $(function(){
@@ -9,18 +9,52 @@ $(function(){
 	chip.loadRom(rom);
 	chip.initialize();
 
-	chip.fetchOpcode();
-	//animate(chip)
 
 	keyboardInput(chip);
+	eventLoop(chip)
 });
 
-function animate(chip){
+function eventLoop(chip){
+	var context = $("#canvas")[0].getContext("2d");
+
 	function loop(){
-		//chip.draw
-		requestAnimFram(loop);
+
+		chip.fetchOpcode();
+		chip.decodeOpcode();
+
+		if (chip.drawFlag){
+			draw(chip, context);
+			chip.drawFlag = false;
+		}
+
+		chip.updateTimers();
+		//requestAnimFrame(loop);
+		setTimeout(loop, 1);
+
 	}
+
 	loop();
+}
+
+
+function draw(chip, context){
+	// Each pixel in chip.gfx is an 8x8 "pixel" on canvas
+
+	context.strokeStyle = "#FFFFFF";
+	context.fillStyle = "#000000";
+	context.fillRect(0, 0, 1024, 512);
+	context.fillStyle = "#FFFFFF";
+
+	for (var row = 0; row < 32; row++){
+		for (var col = 0; col < 64; col++){
+
+			var pos = col + (row * 64);
+
+			if (chip.gfx[pos] == 1){
+				context.fillRect(col * 16, row * 16, 16, 16);
+			}
+		}
+	}
 }
 
 /*     Keypad     Keyboard
