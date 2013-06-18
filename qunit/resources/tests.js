@@ -63,6 +63,16 @@ test("4XNN", function(){
 	equal(chip.pc, 8, "Skips the next instruction if VX does not equal NN");
 });
 
+test("5XY0", function(){
+	chip.opcode = 0x5340;
+	chip.V[3] = 0x01;
+	chip.V[4] = 0x01;
+	chip.pc = 4;
+	chip.decodeOpcode();
+
+	equal(chip.pc, 8, "Skips the next instruction if VX equals VY");
+});
+
 test("6XNN", function(){
 	chip.opcode = 0x6345;
 	chip.decodeOpcode();

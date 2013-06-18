@@ -10,10 +10,10 @@ function Chip8(){
 	this.pc = 0; // program counter
 	this.gfx = new Uint8ClampedArray(2048); // graphics array 64 x 32 screen
 	this.stack = new Uint8ClampedArray(16);
+	this.keys = []; // pressed keys
 	this.sp = 0; // stackpointer
 	this.delayTimer =  0;
 	this.soundTimer = 0;
-
 	this.jumpTable = null; // Opcode function pointers
 
 	this.initialize = function(){
@@ -24,30 +24,14 @@ function Chip8(){
 
 		this.setFunctionPointers();
 		this.setFontSet();
-		this.setKeys();
-
-		// Clear display
-		// Clear stack
-		// CLear registers V0-VF
-		// Clear Memory
-
-		// Load fontset
-
-		// Reset timers
+		this.keyInit();
 	}
 
 	this.setFunctionPointers = function(){
 		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this), this.op2NNN.bind(this), this.op3XNN.bind(this),
-						this.op4XNN.bind(this), this.op5NNN.bind(this), this.op6XNN.bind(this), this.op7XNN.bind(this),
+						this.op4XNN.bind(this), this.op5XY0.bind(this), this.op6XNN.bind(this), this.op7XNN.bind(this),
 						this.op8000.bind(this), this.op9XY0.bind(this), this.opANNN.bind(this), this.opBNNN.bind(this),
 						this.opCXNN.bind(this), this.opDXYN.bind(this), this.opE000.bind(this), this.opF000.bind(this)]
-	}
-
-	this.setKeys = function(){
-		this.keys = new Uint8ClampedArray([ 0,0,0,0,
-											0,0,0,0,
-											0,0,0,0,
-											0,0,0,0]);
 	}
 
 	this.loadRom = function(rom){
@@ -66,13 +50,7 @@ function Chip8(){
 		this.jumpTable[(this.opcode & 0xF000) >> 12]();
 	}
 
-	this.cpuArithmetic = function(){
-
-	}
-
 	this.op0NNN = function(){
-		// TODO: 0NNN: Calls RCA 1802 program at address NNN.
-
 		// 00E0 Clears screen
 		if ((this.opcode & 0x000F) == 0x0000){
 			this.clearDisplay();
@@ -97,7 +75,7 @@ function Chip8(){
 		this.pc = this.opcode & 0x0FFF;
 	}
 
-	// Skips the next instruction if VX equals NN
+	// Skips the next instruction if VX == NN
 	this.op3XNN = function(){
 		if ((this.V[(this.opcode & 0x0F00) >> 8]) == (this.opcode & 0x00FF)){
 			this.pc += 4;
@@ -106,7 +84,7 @@ function Chip8(){
 			this.pc += 2;
 		}
 	}
-	// Skips the next instruction if VX equals NN
+	// Skips the next instruction if VX !+ NN
 	this.op4XNN = function(){
 		if ((this.V[(this.opcode & 0x0F00) >> 8]) != (this.opcode & 0x00FF)){
 			this.pc += 4;
@@ -116,8 +94,17 @@ function Chip8(){
 		}
 	}
 
-	this.op5NNN = function(){
+	// Skips the next instruction if VX equals VY
+	this.op5XY0 = function(){
+		var x = (this.opcode & 0x0F00) >> 8,
+			y = (this.opcode & 0x00F0) >> 4;
 
+		if(this.V[x] == this.V[y]){
+			this.pc += 4;
+		}
+		else{
+			this.pc += 2;
+		}
 	}
 
 	// Sets VX to NN
@@ -132,11 +119,11 @@ function Chip8(){
 		this.sp += 2;
 	}
 
-	// Jump table for 8XYN op codes
+	// Jump table for 8XYN op codes (There is no 8 through D)
 	this.op8000 = function(){
 		var jump = [this.op8XY0.bind(this), this.op8XY1.bind(this), this.op8XY2.bind(this),
 					this.op8XY3.bind(this), this.op8XY4.bind(this), this.op8XY5.bind(this),
-					this.op8XY6.bind(this), this.op8XY7.bind(this), ,,,,,,this.op8XYE.bind(this)];
+					this.op8XY6.bind(this), this.op8XY7.bind(this),,,,,,, this.op8XYE.bind(this)];
 
 		jump[(this.opcode & 0x000F)]();
 	}
@@ -307,26 +294,37 @@ function Chip8(){
 		var x = (this.opcode & 0x0F00) >> 8;
 
 		switch(this.opcode & 0x00FF){
-			case(0x0007):
+			case (0x0007):
 				// FX07: Setvs VX to value of delay timer
 				this.V[x] = this.delayTimer;
 				break;
 
-			case(0x000A):
-				// FX07: A key press is awaited, and then stored in VX
+			case (0x000A):
+				// FX0A: A key press is awaited, and then stored in VX
+				var keyPress = false;
+
+				for (var i = 0; i < 16; i++){
+					if (this.keys[i] == true){
+						keyPress = true;
+						this.V[x] = i;
+					}
+				}
+
+				// key is not pressed yet, don't add to program counter
+				if (!keyPress) return; 
 				break;
 
-			case(0x0015):
+			case (0x0015):
 				// FX15: Sets the delay timer to VX
 				this.delayTimer = this.V[x];
 				break;
 
-			case(0x0018):
+			case (0x0018):
 				// FX18: Sets the sound timer to VX
 				this.soundTimer = this.V[x];
 				break;
 
-			case(0x001E):
+			case (0x001E):
 				// FX1E: Adds VX to I
 				if ((this.I + this.V[x]) > 0xFFF){
 					//carry bit
@@ -339,18 +337,19 @@ function Chip8(){
 				this.I += this.V[x];
 				break;
 
-			case(0x0029): // FX29:
+			case (0x0029): // FX29:
 				// Sets I to the location of the sprite for the character in VX.
 				// Characters 0-F are represented by a 4x5 font
 				break;
 
-			case(0x0033): // FX33:
-				// Stores the binary-coded decimal representation of VX, with the most significant
-				// of the three digits at the address in I, the middle digiat at I + 1, and the
-				// least significant digits at I + 2.
+			case (0x0033):
+				// FX33: Stores the binary-coded decimal representation of VX
+				this.memory[I] = this.V[x] / 100;
+				this.memory[I + 1] = (this.V[x] / 10) % 10;
+				this.memory[I + 2] = (this.V[x] % 100) % 10;
 				break;
 
-			case(0x0055):// FX55: Stores V0 to VX in memory starting at address I
+			case (0x0055):// FX55: Stores V0 to VX in memory starting at address I
 				for (var i = 0; i <= x; i++){
 					this.memory[this.I + i] = this.V[i];
 				}
@@ -358,7 +357,7 @@ function Chip8(){
 				this.I +=  x + 1;
 				break;
 
-			case(0x0065): // FX65: Fills V0 to VX with values from memory starting at address I
+			case (0x0065): // FX65: Fills V0 to VX with values from memory starting at address I
 				for (var i = 0; i <= x; i++){
 					this.V[i] = this.memory[this.I + i];
 				}
@@ -371,10 +370,6 @@ function Chip8(){
 
 			this.pc += 2;
 		}
-	}
-
-	this.loadFontSet = function(){
-
 	}
 
 	this.clearDisplay = function(){
@@ -401,12 +396,21 @@ function Chip8(){
 		}
 	}
 
+	this.setKey = function(key, bool){
+		this.keys[key] = bool;
+	}
+
 	this.resetDelayTimer = function(){
 		this.delayTimer = 0;
 	}
 
 	this.resetSoundTimer = function(){
 		this.resetTimer = 0;
+	}
+
+	this.keyInit = function(){
+		for (var i = 0; i < this.keys.length; i++){
+			this.keys[i] = false;		}
 	}
 
 	this.setFontSet = function(){
