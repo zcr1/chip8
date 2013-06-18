@@ -11,14 +11,6 @@ test("Global pollution", function() {
 var chip = new Chip8();
 chip.initialize();
 
-test("ANNN", function(){
-	chip.opcode = 0xA555;
-	chip.decodeOpcode();
-
-	equal(chip.I, 0x0555, "Sets I to the address NNN");
-});
-
-
 test("0EEE", function(){
 	chip.opcode = 0x00EE;
 
@@ -190,7 +182,7 @@ test("8XYE", function(){
 
 	chip.decodeOpcode();
 
-	equal(chip.V[1], 0x07, "Right shift VX");
+	equal(chip.V[1], 30, "Left shift VX");
 	equal(chip.V[15], 0, "Most significant bit");
 });
 
@@ -220,12 +212,51 @@ test("BNNN", function(){
 	equal(chip.pc, 0x55 + 0x0111, "Jumps to the address NNN plus V0");
 });
 
+// CXNN random number can't test, but it works
+
+// DXYN
+
+test("EX9E", function(){
+	chip.opcode = 0xE19E;
+	chip.setKey(0xE, true);
+	chip.V[1] = 0xE;
+	chip.pc = 4;
+	chip.decodeOpcode();
+
+	equal(chip.pc, 8, "Skips the next instruction if the key stored in VX is pressed");
+});
+
+test("EXA1", function(){
+	chip.opcode = 0xE1A1;
+	chip.setKey(0xE, false);
+	chip.V[1] = 0xE;
+	chip.pc = 4;
+	chip.decodeOpcode();
+
+	equal(chip.pc, 8, "Skips the next instruction if the key stored in VX is not pressed");
+});
+
 test("FX07", function(){
 	chip.opcode = 0xF107;
 	chip.delayTimer = 30;
 	chip.decodeOpcode();
 
 	equal(chip.V[1], chip.delayTimer, "Sets VX to the value of the delay timer");
+});
+
+test("FX0A", function(){
+	chip.opcode = 0xF00A;
+	chip.setKey(0xE, false);
+	chip.V[1] = 0xE;
+	chip.pc = 4;
+	chip.decodeOpcode();
+
+	equal(chip.pc, 4, "A key press is awaited, should still be waiting!");
+
+	chip.setKey(0xE, true);
+	chip.decodeOpcode();
+
+	equal(chip.V[1], 0xE, "A key press is awaited, should be in V[1]");
 });
 
 test("FX15", function(){
@@ -260,11 +291,16 @@ test("FX1E", function(){
 	equal(chip.V[15], 1, "Carry bit");
 });
 
-//FX29
+test("FX29", function(){
+	chip.opcode = 0xF229;
+	chip.V[2] = 0xC;
+	chip.decodeOpcode();
+
+	equal(chip.I, 60, "Sets I to the location of the sprite for the character C in V2")
+});
 
 //FX33
 
-//Stores V0 to VX in memory starting at address I
 test("FX55", function(){
 	chip.opcode = 0xF255;
 
@@ -280,7 +316,6 @@ test("FX55", function(){
 	equal(chip.V[2], chip.memory[5 + 2], "More memory")
 });
 
-//Fills V0 to VX with values from memory starting at address I
 test("FX65", function(){
 	chip.opcode = 0xF265;
 
@@ -295,5 +330,3 @@ test("FX65", function(){
 	equal(chip.V[1], chip.memory[5 + 1], "V1")
 	equal(chip.V[2], chip.memory[5 + 2], "V2")
 });
-
-
