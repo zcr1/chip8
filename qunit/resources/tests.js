@@ -128,7 +128,7 @@ test("8XY4", function(){
 	chip.V[2] = 0x01;
 	chip.decodeOpcode();
 
-	equal(chip.V[1], 0xFF, "Adds VY to VX");
+	equal(chip.V[1], 0, "Adds VY to VX. Overflow V[1] = 0");
 	equal(chip.V[15], 1, "Carry bit");
 });
 
@@ -139,14 +139,14 @@ test("8XY5", function(){
 	chip.decodeOpcode();
 
 	equal(chip.V[1], 11, "Subtracts VY from VX");
-	equal(chip.V[15], 0, "No Borrow bit");
+	equal(chip.V[15], 1, "No Borrow bit");
 
 	chip.V[1] = 10;
 	chip.V[2] = 20;
 	chip.decodeOpcode();
 
-	equal(chip.V[1], 0, "Subtracts VY from VX");
-	equal(chip.V[15], 1, "Borrow bit");
+	equal(chip.V[1], 0xF6, "Subtracts VY from VX");
+	equal(chip.V[15], 0, "No Borrow bit");
 });
 
 test("8XY6", function(){
@@ -167,13 +167,13 @@ test("8XY7", function(){
 	chip.decodeOpcode();
 
 	equal(chip.V[1], 5, "Sets VX to VY - VX");
-	equal(chip.V[15], 0, "No borrow bit");
+	equal(chip.V[15], 1, "Borrow bit");
 
 	chip.V[1] = 20;
 	chip.decodeOpcode();
 
-	equal(chip.V[1], 0, "Sets VX to VY - VX");
-	equal(chip.V[15], 1, "Borrow bit");
+	equal(chip.V[1], 0xFB, "Sets VX to VY - VX");
+	equal(chip.V[15], 0, "No borrow bit");
 });
 
 test("8XYE", function(){
