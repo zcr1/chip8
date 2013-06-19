@@ -4,11 +4,11 @@
 
 function Chip8(){
 	this.opcode = 0;
-	this.memory = new Uint8ClampedArray(4096); // 4K
-	this.V = new Uint8ClampedArray(16); // 16 registers V0, V1, ..., VD, VE
+	this.memory = new Uint8Array(4096); // 4K
+	this.V = new Uint8Array(16); // 16 registers V0, V1, ..., VD, VE
 	this.I = 0; // index register
 	this.pc = 0; // program counter
-	this.gfx = new Uint8ClampedArray(2048); // graphics array 64 x 32 screen
+	this.gfx = new Uint8Array(2048); // graphics array 64 x 32 screen
 	this.stack = new Uint16Array(16);
 	this.keys = new Array(16); // pressed keys
 	this.sp = 0; // stackpointer
@@ -176,24 +176,27 @@ function Chip8(){
 
 		if (this.V[y] > (0xFF - this.V[x])){
 			this.V[15] = 1;
+
 		}
 		else{
 			this.V[15] = 0;
+
 		}
+
 		this.V[x] += this.V[y];
 		this.pc += 2;
 	}
 
-	// Subtract VY from VX. VF is set to borrow
+	// Subtract VY from VX. VF is set to 0 when there's a borrow, 1 otherwise
 	this.op8XY5 = function(){
 		var x = (this.opcode & 0x0F00) >> 8,
 			y = (this.opcode & 0x00F0) >> 4;
 
 		if (this.V[y] > this.V[x]){
-			this.V[15] = 1;
+			this.V[15] = 0;
 		}
 		else{
-			this.V[15] = 0;
+			this.V[15] = 1;
 		}
 
 		this.V[x] -= this.V[y];
@@ -209,16 +212,16 @@ function Chip8(){
 		this.pc += 2;
 	}
 
-	// Sets VX to VY - VX. VF is set to borrow
+	// Sets VX to VY - VX. VF is set to - when there's a borrow and 1 otherwise
 	this.op8XY7 = function(){
 		var x = (this.opcode & 0x0F00) >> 8,
 			y = (this.opcode & 0x00F0) >> 4;
 
 		if (this.V[x] > this.V[y]){
-			this.V[15] = 1;
+			this.V[15] = 0;
 		}
 		else{
-			this.V[15] = 0;
+			this.V[15] = 1;
 		}
 
 		this.V[x] = this.V[y] - this.V[x];
@@ -303,17 +306,16 @@ function Chip8(){
 
 		// EX9E: Skip next instruction if key in VX is pressed
 		if ((this.opcode & 0x00FF) == 0x009E){
-			if (this.keys[this.V[x]]){
+			if (this.keys[this.V[x]] == true){
 				this.pc += 4;
 			}
 			else{
 				this.pc += 2;
 			}
 		}
-
 		// EXA1: Skip next instruction if key in VX not pressed
 		else if ((this.opcode & 0x00FF) == 0x00A1){
-			if (!this.keys[this.V[x]]){
+			if (this.keys[this.V[x]] == false){
 				this.pc += 4;
 			}
 			else{
@@ -344,7 +346,7 @@ function Chip8(){
 				}
 
 				// key is not pressed yet, don't add to program counter
-				if (!keyPress) return;
+				if (keyPress == false) return;
 				break;
 
 			case (0x0015):
@@ -467,5 +469,7 @@ function Chip8(){
 	this.updateTimers = function(){
 		if (this.delayTimer > 0) this.delayTimer -= 1;
 		if (this.soundTimer > 0) this.soundTimer -= 1;
+		if (this.soundTimer == 1) console.log("beep");
+
 	}
 }

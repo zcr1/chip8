@@ -5,7 +5,9 @@ $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
 
+	rom.setRom(1);
 	rom.initialize();
+
 	chip.loadRom(rom);
 	chip.initialize();
 
@@ -22,14 +24,16 @@ function eventLoop(chip){
 		chip.fetchOpcode();
 		chip.decodeOpcode();
 
+
+
+		chip.updateTimers();
+		requestAnimFrame(loop);
+
 		if (chip.drawFlag){
 			draw(chip, context);
 			chip.drawFlag = false;
 		}
-
-		chip.updateTimers();
-		//requestAnimFrame(loop);
-		setTimeout(loop, 1);
+		//setTimeout(loop, 1);
 
 	}
 
