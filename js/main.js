@@ -51,7 +51,7 @@ function draw(chip, context){
 			var pos = col + (row * 64);
 
 			if (chip.gfx[pos] == 1){
-				context.fillRect(col * 16, row * 16, 16, 16);
+				context.fillRect(col * 14, row * 14, 14, 14);
 			}
 		}
 	}
