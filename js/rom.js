@@ -248,14 +248,21 @@ function ROM(){
 	this.src = null; // Uint8Array of binary data
 	this.currRom = null; // Currently selected rom
 
-	this.setRom = function(x){
-		if (x == 0) this.currRom = this.pong;
-		if (x == 1) this.currRom = this.invaders;
+	this.setRom = function(rom){
+		if (rom == "brix") this.currRom = this.brix;
+		else if (rom == "invaders") this.currRom = this.invaders;
+		else if (rom == "kaleid") this.currRom = this.kaleid;
+		else if (rom == "pong") this.currRom = this.pong;
+		else if (rom == "tank") this.currRom = this.tank;
+		else if (rom == "tetris") this.currRom = this.tetris;
+		else if (rom == "vbrix") this.currRom = this.vbrix;
+		else if (rom == "vers") this.currRom = this.vers;
+
+		this.initialize();
 	}
 
 	this.initialize = function(){
 		this.currRom = this.currRom.replace(/ /g, '');
-		console.log(this.currRom);
 
 		var len = this.currRom.length / 2,
 			buffer = new ArrayBuffer(len);
