@@ -12,12 +12,12 @@
 
 /* CSS reset */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
-    margin:0;
-    padding:0;
+	margin:0;
+	padding:0;
 }
 html,body {
-    margin:0;
-    padding:0;
+	margin:0;
+	padding:0;
 }
 
 
@@ -28,13 +28,13 @@ html,body {
  */
 
 ::-moz-selection {
-    background: #b3d4fc;
-    text-shadow: none;
+	background: #b3d4fc;
+	text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
-    text-shadow: none;
+	background: #b3d4fc;
+	text-shadow: none;
 }
 
 /*
@@ -42,12 +42,12 @@ html,body {
  */
 
 hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #ccc;
+	margin: 1em 0;
+	padding: 0;
 }
 
 /*
@@ -55,7 +55,7 @@ hr {
  */
 
 img {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 /*
@@ -63,9 +63,9 @@ img {
  */
 
 fieldset {
-    border: 0;
-    margin: 0;
-    padding: 0;
+	border: 0;
+	margin: 0;
+	padding: 0;
 }
 
 /*
@@ -73,7 +73,7 @@ fieldset {
  */
 
 textarea {
-    resize: vertical;
+	resize: vertical;
 }
 
 /* ==========================================================================
@@ -81,16 +81,108 @@ textarea {
    ========================================================================== */
 
 .chromeframe {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
+	margin: 0.2em 0;
+	background: #ccc;
+	color: #000;
+	padding: 0.2em 0;
 }
 
 /* ==========================================================================
-   Author's custom styles
+   Custom styles
    ========================================================================== */
+#canvas{
+	display: block
+}
+
+#topTable{
+	width:100%;
+	height: 320px;
+	margin-top: 3%;
+	margin-bottom: 3%;
+	text-align: top;
+}
+
+#topRow{
+	width: 100%;
+	height: 100%;
+	display: table-row;
+}
 
 #container{
-    display: inline-block;
+	display: table-cell;
+	border: 1px solid #000000;
+}
+
+#leftCol{
+	display: table-cell;
+	width: 30%;
+	min-width: 200px;
+	vertical-align: top;
+}
+
+#rightCol{
+	display: table-cell;
+	width: 30%;
+	min-width: 200px;
+	vertical-align: top;
+	padding-left: 2em;
+}
+
+#controls{
+	font-size: 1.25em;
+	border-spacing: 5px;
+}
+
+#controls tr{
+
+}
+
+#controls td{
+	padding: 5px;
+}
+
+
+/***********
+ * Squares *
+ ***********/
+
+.square {
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	cursor: pointer;
+
+}
+.active{
+	width: 20px;
+	height: 20px;
+}
+.square:hover{
+	width: 20px;
+	height: 20px;
+}
+
+.red {
+	background: #FA6969;
+}
+
+.blue{
+	background: #6DA7D1;
+}
+
+.black{
+	background: #000000;
+}
+
+.white{
+	background: #FFFFFF;
+	border: 1px solid #000000;
+}
+
+.orange{
+	background: #FF9773;
+}
+
+.green{
+	background: #00B25C;
 }

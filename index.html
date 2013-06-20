@@ -19,8 +19,68 @@
 			<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 		<![endif]-->
 
-		<div id="container">
-			<canvas id="canvas" width="896px" height="448px"></canvas>
+		<div id="topTable">
+			<div id="topRow">
+				<div id="leftCol">
+					<h3>Chip8 Emulator</h3>
+					<p>This is where I will explain what a chip8 emulator is and give some background information on
+						its majestic qualities</p>
+				</div>
+
+				<div id="container">
+					<canvas id="canvas" width="640px" height="320px"></canvas>
+				</div>
+
+				<div id="rightCol">
+					<table id="controls">
+						<tr>
+							<td>1</td>
+							<td>2</td>
+							<td>3</td>
+							<td>4</td>
+						</tr>
+						<tr>
+							<td>q</td>
+							<td>w</td>
+							<td>e</td>
+							<td>r</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>s</td>
+							<td>d</td>
+							<td>f</td>
+						</tr>
+						<tr>
+							<td>z</td>
+							<td>x</td>
+							<td>c</td>
+							<td>v</td>
+						</tr>
+					</table>
+
+					<div id="colorScheme">
+						<div id="backColor">
+							<div class="black square"></div>
+							<div class="white square"></div>
+							<div class="orange square"></div>
+							<div class="green square"></div>
+							<div class="blue square"></div>
+							<div class="red square"></div>
+						</div>
+
+						<div id="blockColor">
+							<div class="black square"></div>
+							<div class="white square"></div>
+							<div class="orange square"></div>
+							<div class="green square"></div>
+							<div class="blue square"></div>
+							<div class="red square"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.9.1.min.js"><\/script>')</script>
