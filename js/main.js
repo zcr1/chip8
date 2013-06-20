@@ -5,12 +5,10 @@ $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
 
-	rom.setRom(1);
-	rom.initialize();
+	rom.setRom("brix");
 
 	chip.loadRom(rom);
 	chip.initialize();
-
 
 	keyboardInput(chip);
 	eventLoop(chip)
@@ -20,40 +18,37 @@ function eventLoop(chip){
 	var context = $("#canvas")[0].getContext("2d");
 
 	function loop(){
-
 		chip.fetchOpcode();
 		chip.decodeOpcode();
-
-
-
 		chip.updateTimers();
-		requestAnimFrame(loop);
+		//requestAnimFrame(loop);
 
 		if (chip.drawFlag){
 			draw(chip, context);
 			chip.drawFlag = false;
 		}
-		//setTimeout(loop, 1);
-
+		setTimeout(loop, 1);
 	}
 
 	loop();
 }
 
+function colorPicker(){
+	//black white #000000 #FFFFFF
+	//salmon green "#FF9773" "#00B25C"
+}
 
 function draw(chip, context){
 	// Each pixel in chip.gfx is an 8x8 "pixel" on canvas
 
-	context.strokeStyle = "#FFFFFF";
-	context.fillStyle = "#000000";
+	context.fillStyle = chip.backColor;
 	context.fillRect(0, 0, 1024, 512);
-	context.fillStyle = "#FFFFFF";
+	context.fillStyle = chip.blockColor;
 
 	for (var row = 0; row < 32; row++){
 		for (var col = 0; col < 64; col++){
 
 			var pos = col + (row * 64);
-
 			if (chip.gfx[pos] == 1){
 				context.fillRect(col * 14, row * 14, 14, 14);
 			}
@@ -88,6 +83,7 @@ function keyboardInput(chip){
 			case (87): // w
 				chip.setKey(5, true);
 				break;
+	
 			case (69): // e
 				chip.setKey(6, true);
 				break;
