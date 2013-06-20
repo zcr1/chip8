@@ -26,7 +26,6 @@
 Array.prototype.copy = function() {
     return this.slice(0);
 };
-
 // Retruns background color in Hex instead of RGB
 $.cssHooks.backgroundColor = {
     get: function(elem) {
