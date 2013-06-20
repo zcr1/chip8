@@ -474,4 +474,14 @@ function Chip8(){
 		if (this.soundTimer == 1) console.log("beep");
 
 	}
+
+	this.setBlockColor = function(color){
+		this.blockColor = color;
+		this.drawFlag = true;
+	}
+
+	this.setBackColor = function(color){
+		this.backColor = color;
+		this.drawFlag = true;
+	}
 }

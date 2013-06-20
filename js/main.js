@@ -5,15 +5,22 @@ $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
 
+	setWidths();
+
 	rom.setRom("brix");
 
 	chip.loadRom(rom);
 	chip.initialize();
 
+	colorPicker(chip);
 	keyboardInput(chip);
+
 	eventLoop(chip)
 });
 
+function setWidths(){
+
+}
 function eventLoop(chip){
 	var context = $("#canvas")[0].getContext("2d");
 
@@ -33,16 +40,32 @@ function eventLoop(chip){
 	loop();
 }
 
-function colorPicker(){
-	//black white #000000 #FFFFFF
-	//salmon green "#FF9773" "#00B25C"
+function colorPicker(chip){
+	$("#backColor > div").click(function(){
+		chip.setBackColor($(this).css("backgroundColor"));
+
+		$("#backColor > div").each(function (){
+			$(this).removeClass("active");
+		});
+
+		$(this).addClass("active");
+	});
+	$("#blockColor > div").click(function(){
+		chip.setBlockColor($(this).css("backgroundColor"));
+
+		$("#blockColor > div").each(function (){
+			$(this).removeClass("active");
+		});
+
+		$(this).addClass("active");
+	});
 }
 
 function draw(chip, context){
 	// Each pixel in chip.gfx is an 8x8 "pixel" on canvas
 
 	context.fillStyle = chip.backColor;
-	context.fillRect(0, 0, 1024, 512);
+	context.fillRect(0, 0, 640, 320);
 	context.fillStyle = chip.blockColor;
 
 	for (var row = 0; row < 32; row++){
@@ -50,7 +73,7 @@ function draw(chip, context){
 
 			var pos = col + (row * 64);
 			if (chip.gfx[pos] == 1){
-				context.fillRect(col * 14, row * 14, 14, 14);
+				context.fillRect(col * 10, row * 10, 10, 10);
 			}
 		}
 	}
@@ -83,7 +106,7 @@ function keyboardInput(chip){
 			case (87): // w
 				chip.setKey(5, true);
 				break;
-	
+
 			case (69): // e
 				chip.setKey(6, true);
 				break;
@@ -184,8 +207,3 @@ window.requestAnimFrame = function(){
 		}
 	);
 }();
-
-//Returns a copy of array
-Array.prototype.copy = function() {
-	return this.slice(0);
-};
