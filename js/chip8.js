@@ -16,7 +16,7 @@ function Chip8(){
 	this.soundTimer = 0;
 	this.drawFlag = true;
 	this.jumpTable = null; // Opcode function pointers
-	this.blockColor = "#FA6969";
+	this.blockColor = "#FFFFFF";
 	this.backColor = "#6DA7D1";
 
 	this.initialize = function(){

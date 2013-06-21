@@ -1,26 +1,24 @@
 // Chip 8 Emulator
 "use strict";
 
+// http://2b2t.org/
+
 $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
-
-	setWidths();
 
 	rom.setRom("brix");
 
 	chip.loadRom(rom);
 	chip.initialize();
 
+	romPicker(chip);
 	colorPicker(chip);
 	keyboardInput(chip);
 
 	eventLoop(chip)
 });
 
-function setWidths(){
-
-}
 function eventLoop(chip){
 	var context = $("#canvas")[0].getContext("2d");
 
@@ -28,32 +26,38 @@ function eventLoop(chip){
 		chip.fetchOpcode();
 		chip.decodeOpcode();
 		chip.updateTimers();
-		//requestAnimFrame(loop);
+
 
 		if (chip.drawFlag){
 			draw(chip, context);
 			chip.drawFlag = false;
 		}
+
 		setTimeout(loop, 1);
+		//requestAnimFrame(loop);
 	}
 
 	loop();
 }
 
 function colorPicker(chip){
-	$("#backColor > div").click(function(){
+	var $backColor = $("#backColor > div"),
+		$blockColor = $("#blockColor > div");
+
+	$backColor.click(function(){
 		chip.setBackColor($(this).css("backgroundColor"));
 
-		$("#backColor > div").each(function (){
+		$backColor.each(function (){
 			$(this).removeClass("active");
 		});
 
 		$(this).addClass("active");
 	});
-	$("#blockColor > div").click(function(){
+
+	$blockColor.click(function(){
 		chip.setBlockColor($(this).css("backgroundColor"));
 
-		$("#blockColor > div").each(function (){
+		$blockColor.each(function (){
 			$(this).removeClass("active");
 		});
 
@@ -62,7 +66,7 @@ function colorPicker(chip){
 }
 
 function draw(chip, context){
-	// Each pixel in chip.gfx is an 8x8 "pixel" on canvas
+	// Each pixel in Chip8 is represented by a 10x10 "pixel" on canvas
 
 	context.fillStyle = chip.backColor;
 	context.fillRect(0, 0, 640, 320);
@@ -77,6 +81,14 @@ function draw(chip, context){
 			}
 		}
 	}
+}
+
+function romPicker(chip){
+	var $roms = $("#roms");
+
+	$roms.change(function(){
+		console.log("fart");
+	});
 }
 
 /*     Keypad     Keyboard
