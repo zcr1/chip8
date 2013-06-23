@@ -1,5 +1,90 @@
 function ROM(){
 
+	this.astro = "1214 5245 5649 5641 4c53 5455 4449 4f53"+
+				"3230 3038 00e0 6d20 fd15 249b 24a3 6d40"+
+				"fd15 249b 24a3 6d20 fd15 249b 00e0 a41b"+
+				"2563 24fb 6d04 6c00 6005 e09e 1240 1254"+
+				"fd15 249b 7c01 4c00 24fb 4c04 24fb 4c08"+
+				"6c00 1238 6d02 fd18 a41b 2563 00e0 6810"+
+				"6914 22e8 228c 258d 632c 6400 2655 632c"+
+				"6406 2665 6d00 6e08 22b6 22ee 7d08 4d80"+
+				"6d00 7e08 4e80 6e00 1278 122c 6c00 a366"+
+				"fc1e f165 c103 a366 fc1e f155 a39b d018"+
+				"7c03 3c09 128e 00ee 2595 2320 c00f 8004"+
+				"8004 6100 00ee 6c00 6500 a366 fc1e f265"+
+				"a39b fd1e d018 8124 8310 641e 8345 4f01"+
+				"22a8 a39b fe1e d018 a366 fc1e f155 7518"+
+				"7c03 3c09 12ba 00ee a393 d898 00ee 22e8"+
+				"6004 e09e 12fa 3800 78fe 6006 e09e 1304"+
+				"3838 7802 6002 e09e 130e 3910 79ff 6008"+
+				"e09e 1318 3918 7901 22e8 4f01 132e 00ee"+
+				"632c 6400 25b7 632c 6406 25f3 00ee 6d01"+
+				"fd18 6d04 fd15 249b 6d01 fd18 6d04 fd15"+
+				"249b 6d01 fd18 6d04 fd15 249b 6d01 fd18"+
+				"00e0 6000 6104 2531 6316 6416 2655 6005"+
+				"e09e 135e 122c 0001 0118 0202 3003 0340"+
+				"0401 4005 0240 0703 0001 0100 0101 0001"+
+				"0100 0101 0001 0100 0101 0001 0100 0101"+
+				"0001 0118 1834 247e ffe7 9900 4038 142a"+
+				"753a 1400 0028 703e 072a 0000 4008 5c7a"+
+				"750a 0400 5028 543e 752e 0120 7078 7c3c"+
+				"756a 5400 6478 787e 7de8 5008 442a 503a"+
+				"5de8 4008 540a 112a 5c68 4000 042a 572a"+
+				"1628 5000 002a 136a 5608 0000 0008 712a"+
+				"5230 0000 040a 143a 6068 0000 040a 1c3e"+
+				"7068 5020 502e 5f2e 5c28 5020 5c3a 573e"+
+				"5e28 5000 5838 772e 7f3e 5478 7ef7 f1be"+
+				"9e38 66f8 cd73 9be3 36cf de78 66f7 1dbe"+
+				"9b3a 36f9 cd73 b3e3 6ccf d8cd 3383 7833"+
+				"d966 9ccd f89b e336 876c 3cfd 7ef7 79bf"+
+				"9f7c 66fc cdfb 9bf7 36ef defd 66f7 1dbf"+
+				"9b7c 36fc cdfb b3f7 ecef d8cd 00c3 0033"+
+				"0066 00cd 009b 0036 000c 0085 6600 1901"+
+				"9b46 6605 cd88 9b14 6c20 d8cd 3383 7c33"+
+				"d96e becd fddb f376 cf6c bcf0 0730 0014"+
+				"9b00 ee6d 0461 0c60 1c62 12a7 0ff2 1ed0"+
+				"16fd 1524 9b60 1462 0ca7 0ff2 1ed0 1660"+
+				"2462 18a7 0ff2 1ed0 16fd 1524 9b60 0c62"+
+				"06a7 0ff2 1ed0 1660 2c62 1ea7 0ff2 1ed0"+
+				"16fd 1524 9ba7 0f60 04d0 1660 3462 24a7"+
+				"0ff2 1ed0 16fd 1524 9b00 ee62 0660 0061"+
+				"17a6 7fd0 1670 08f2 1ed0 1670 08f2 1ed0"+
+				"1670 08f2 1ed0 1670 08f2 1ed0 1670 08f2"+
+				"1ed0 1670 08f2 1ed0 1670 08f2 1ed0 1600"+
+				"ee62 0ca6 afd0 1c70 08f2 1ed0 1c70 08f2"+
+				"1ed0 1c70 08f2 1ed0 1c70 08f2 1ed0 1c70"+
+				"08f2 1ed0 1c70 08f2 1ed0 1c70 08f2 1ed0"+
+				"1c00 ee64 0165 0762 0063 0060 0081 3071"+
+				"03d0 1171 08f4 1ed0 11f4 1e70 0830 4015"+
+				"6d73 0383 5272 0132 0815 6b00 ee60 00a6"+
+				"75f0 5500 eea6 75f1 6582 0083 1070 0185"+
+				"0085 154f 0181 00a6 75f3 5500 eef1 29d3"+
+				"45f0 29d3 4500 eea6 75f2 65a6 7cf2 33a6"+
+				"79f0 33a6 7cf0 6581 00a6 79f0 6550 1025"+
+				"ad73 05a6 7df0 6581 00a6 7af0 6550 1025"+
+				"ad73 05a6 7ef0 6581 00a6 7bf0 6550 1025"+
+				"ad00 eea6 76f2 65a6 7cf2 33a6 79f0 33a6"+
+				"7cf0 6581 00a6 79f0 6550 1025 ad73 05a6"+
+				"7df0 6581 00a6 7af0 6550 1025 ad73 05a6"+
+				"7ef0 6581 00a6 7bf0 6550 1025 ad00 eea6"+
+				"79f0 65f0 29d3 4573 05a6 7af0 65f0 29d3"+
+				"4573 05a6 7bf0 65f0 29d3 4573 0562 00f2"+
+				"29d3 4500 eea6 75f2 65a6 7cf2 33a6 79f0"+
+				"3326 2f00 eea6 76f2 65a6 7cf2 33a6 79f0"+
+				"3326 2f00 ee00 1400 0000 0000 0000 0000"+
+				"3c36 3c30 3000 f3db f3db db00 e70c c701"+
+				"ef00 9e30 1c86 3c00 1e30 1c06 3c00 f366"+
+				"6766 6600 9edb dedb db00 7830 3030 3001"+
+				"0303 0303 0303 0303 0303 01e7 0d0d 6f6d"+
+				"6d6d 6d6d 6d6d ed3f b5b5 b5b5 b5b5 b5b5"+
+				"b5b5 b53e b0b0 bcb0 b0b0 b0b0 b0b0 be1c"+
+				"3636 3636 3636 3636 3636 1cdb dbdb dbdb"+
+				"dbdb dbdb db7b 3bef 0d0d cf0d 0d0d 0d0d"+
+				"0d0d ed00 8080 0080 8080 8080 8080 8000"+
+				"000c 1111 1000 0095 5595 cd00 0053 5555"+
+				"3340 4044 4241 4600 406a 4a4a 4600 2069"+
+				"aaaa 6900 0020 9088 30";
+
 	this.brix = "6e05 6500 6b06 6a00 a30c dab1 7a04 3a40"+
 				"1208 7b02 3b12 1206 6c20 6d1f a310 dcd1"+
 				"22f6 6000 6100 a312 d011 7008 a30e d011"+
@@ -100,15 +185,6 @@ function ROM(){
 					"a824 5454 12a8 4278 0c3c a8ae a8a8 a8a8"+
 					"a8a8 a8ff 0000 0000 0000 0000 0000 0000"+
 					"0000 00";
-
-	this.kaleid = "6000 6380 611f 620f 2232 a200 f31e f00a"+
-					"f055 4000 121c 7301 3300 1208 6380 a200"+
-					"f31e f065 4000 121c 7301 4300 121c 2232"+
-					"121e 4002 72ff 4004 71ff 4006 7101 4008"+
-					"7201 a277 6ae0 8a12 6b1f 81b2 3a00 7201"+
-					"6af0 8a22 6b0f 82b2 3a00 7101 6b1f 81b2"+
-					"d121 8a10 6b1f 8b25 dab1 6a3f 8a15 dab1"+
-					"8b20 dab1 00ee 0180";
 
 	this.pong = "22f6 6b0c 6c3f 6d0c a2ea dab6 dcd6 6e00"+
 				"22d4 6603 6802 6060 f015 f007 3000 121a"+
@@ -249,14 +325,14 @@ function ROM(){
 	this.currRom = null; // Currently selected rom
 
 	this.setRom = function(rom){
-		if (rom == "brix") this.currRom = this.brix;
-		else if (rom == "invaders") this.currRom = this.invaders;
-		else if (rom == "kaleid") this.currRom = this.kaleid;
-		else if (rom == "pong") this.currRom = this.pong;
-		else if (rom == "tank") this.currRom = this.tank;
-		else if (rom == "tetris") this.currRom = this.tetris;
-		else if (rom == "vbrix") this.currRom = this.vbrix;
-		else if (rom == "vers") this.currRom = this.vers;
+		if (rom == "Astro Dodge") this.currRom = this.astro;
+		else if (rom == "Brix") this.currRom = this.brix;
+		else if (rom == "Space Invaders") this.currRom = this.invaders;
+		else if (rom == "Pong") this.currRom = this.pong;
+		else if (rom == "Tank") this.currRom = this.tank;
+		else if (rom == "Tetris") this.currRom = this.tetris;
+		else if (rom == "Vbrix") this.currRom = this.vbrix;
+		else if (rom == "Vers") this.currRom = this.vers;
 
 		this.initialize();
 	}

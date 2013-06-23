@@ -25,6 +25,11 @@ function Chip8(){
 		this.I = 0;
 		this.sp = 0;
 
+		this.clearDisplay();
+		this.clearStack();
+		this.clearMemory();
+		this.clearRegisters();
+
 		this.setFunctionPointers();
 		this.setFontSet();
 		this.keyInit();

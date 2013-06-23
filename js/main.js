@@ -7,12 +7,12 @@ $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
 
-	rom.setRom("brix");
+	rom.setRom("Brix");
 
-	chip.loadRom(rom);
 	chip.initialize();
-
-	romPicker(chip);
+	chip.loadRom(rom);
+	
+	romPicker(chip, rom);
 	colorPicker(chip);
 	keyboardInput(chip);
 
@@ -40,6 +40,25 @@ function eventLoop(chip){
 	loop();
 }
 
+
+function draw(chip, context){
+	// Each pixel in Chip8 is represented by a 10x10 "pixel" on canvas
+
+	context.fillStyle = chip.backColor;
+	context.fillRect(0, 0, 640, 320);
+	context.fillStyle = chip.blockColor;
+
+	for (var row = 0; row < 32; row++){
+		for (var col = 0; col < 64; col++){
+
+			var pos = col + (row * 64);
+			if (chip.gfx[pos] == 1){
+				context.fillRect(col * 10, row * 10, 10, 10);
+			}
+		}
+	}
+}
+
 function colorPicker(chip){
 	var $backColor = $("#backColor > div"),
 		$blockColor = $("#blockColor > div");
@@ -65,29 +84,15 @@ function colorPicker(chip){
 	});
 }
 
-function draw(chip, context){
-	// Each pixel in Chip8 is represented by a 10x10 "pixel" on canvas
-
-	context.fillStyle = chip.backColor;
-	context.fillRect(0, 0, 640, 320);
-	context.fillStyle = chip.blockColor;
-
-	for (var row = 0; row < 32; row++){
-		for (var col = 0; col < 64; col++){
-
-			var pos = col + (row * 64);
-			if (chip.gfx[pos] == 1){
-				context.fillRect(col * 10, row * 10, 10, 10);
-			}
-		}
-	}
-}
-
 function romPicker(chip){
 	var $roms = $("#roms");
 
 	$roms.change(function(){
-		console.log("fart");
+		var rom = new ROM();
+		rom.setRom($(this).val())
+		
+		chip.initialize();
+		chip.loadRom(rom);
 	});
 }
 
