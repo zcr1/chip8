@@ -324,6 +324,7 @@ function ROM(){
 	this.src = null; // Uint8Array of binary data
 	this.currRom = null; // Currently selected rom
 
+	// Sets the current rom
 	this.setRom = function(rom){
 		if (rom == "Astro Dodge") this.currRom = this.astro;
 		else if (rom == "Brix") this.currRom = this.brix;
@@ -337,6 +338,7 @@ function ROM(){
 		this.initialize();
 	}
 
+	// Parses the rom data into an unsigned char array
 	this.initialize = function(){
 		this.currRom = this.currRom.replace(/ /g, '');
 

@@ -1,3 +1,4 @@
+// String to hex
 function strToHex(str){
 	var hex = '';
 
@@ -8,6 +9,7 @@ function strToHex(str){
 	return hex;
 }
 
+// Decimal to Hex
 function decToHex(i) {
 	return (i+0x10000).toString(16).substr(-4).toUpperCase();
 }
