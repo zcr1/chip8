@@ -1,8 +1,6 @@
 // Chip 8 Emulator
 "use strict";
 
-// http://2b2t.org/
-
 $(function(){
 	var chip = new Chip8(),
 		rom = new ROM();
@@ -11,7 +9,7 @@ $(function(){
 
 	chip.initialize();
 	chip.loadRom(rom);
-	
+
 	romPicker(chip, rom);
 	colorPicker(chip);
 	keyboardInput(chip);
@@ -34,16 +32,13 @@ function eventLoop(chip){
 		}
 
 		setTimeout(loop, 1);
-		//requestAnimFrame(loop);
 	}
 
 	loop();
 }
 
-
+// Each pixel in Chip8 is represented by a 10x10 "pixel" on canvas
 function draw(chip, context){
-	// Each pixel in Chip8 is represented by a 10x10 "pixel" on canvas
-
 	context.fillStyle = chip.backColor;
 	context.fillRect(0, 0, 640, 320);
 	context.fillStyle = chip.blockColor;
@@ -59,6 +54,7 @@ function draw(chip, context){
 	}
 }
 
+// Sets up the color options for emulator
 function colorPicker(chip){
 	var $backColor = $("#backColor > div"),
 		$blockColor = $("#blockColor > div");
@@ -90,7 +86,7 @@ function romPicker(chip){
 	$roms.change(function(){
 		var rom = new ROM();
 		rom.setRom($(this).val())
-		
+
 		chip.initialize();
 		chip.loadRom(rom);
 	});
@@ -210,17 +206,3 @@ function keyboardInput(chip){
 		}
 	});
 }
-
-// Fallback to setTimeout() if browser does not define requestAnimationFrame
-window.requestAnimFrame = function(){
-	return (
-		window.requestAnimationFrame       ||
-		window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame    ||
-		window.oRequestAnimationFrame      ||
-		window.msRequestAnimationFrame     ||
-		function(/* function */ callback){
-			window.setTimeout(callback, 1000 / 60);
-		}
-	);
-}();
