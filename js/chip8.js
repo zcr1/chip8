@@ -1,6 +1,3 @@
-// http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays?redirectlocale=en-US&redirectslug=JavaScript%2FTyped_arrays
-// https://github.com/bfirsh/dynamicaudio.js
 
 function Chip8(){
 	this.opcode = 0;
@@ -30,12 +27,12 @@ function Chip8(){
 		this.clearMemory();
 		this.clearRegisters();
 
-		this.setFunctionPointers();
+		this.setJumpTable();
 		this.setFontSet();
 		this.keyInit();
 	}
 
-	this.setFunctionPointers = function(){
+	this.setJumpTable = function(){
 		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this), this.op2NNN.bind(this), this.op3XNN.bind(this),
 						this.op4XNN.bind(this), this.op5XY0.bind(this), this.op6XNN.bind(this), this.op7XNN.bind(this),
 						this.op8000.bind(this), this.op9XY0.bind(this), this.opANNN.bind(this), this.opBNNN.bind(this),
@@ -55,11 +52,11 @@ function Chip8(){
 	}
 
 	this.decodeOpcode = function(){
-		//console.log(decToHex(this.opcode));
 		this.jumpTable[(this.opcode & 0xF000) >> 12]();
 	}
 
 	this.op0NNN = function(){
+
 		// 00E0 Clears screen
 		if ((this.opcode & 0x000F) == 0x0000){
 			this.clearDisplay();
@@ -476,8 +473,6 @@ function Chip8(){
 	this.updateTimers = function(){
 		if (this.delayTimer > 0) this.delayTimer -= 1;
 		if (this.soundTimer > 0) this.soundTimer -= 1;
-		if (this.soundTimer == 1) console.log("beep");
-
 	}
 
 	this.setBlockColor = function(color){
