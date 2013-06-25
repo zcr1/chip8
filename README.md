@@ -1,5 +1,6 @@
 chip8
 =====
+http://zcr1.github.io/chip8/
 
 CHIP-8 emulator implemented in JavaScript & HTML5 Canvas 
 
