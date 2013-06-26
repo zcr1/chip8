@@ -1,4 +1,5 @@
 function ROM(){
+	"use strict";
 
 	this.astro = "1214 5245 5649 5641 4c53 5455 4449 4f53"+
 				"3230 3038 00e0 6d20 fd15 249b 24a3 6d40"+
@@ -326,17 +327,17 @@ function ROM(){
 
 	// Sets the current rom
 	this.setRom = function(rom){
-		if (rom == "Astro Dodge") this.currRom = this.astro;
-		else if (rom == "Brix") this.currRom = this.brix;
-		else if (rom == "Space Invaders") this.currRom = this.invaders;
-		else if (rom == "Pong") this.currRom = this.pong;
-		else if (rom == "Tank") this.currRom = this.tank;
-		else if (rom == "Tetris") this.currRom = this.tetris;
-		else if (rom == "Vbrix") this.currRom = this.vbrix;
-		else if (rom == "Vers") this.currRom = this.vers;
+		if (rom === "Astro Dodge") this.currRom = this.astro;
+		else if (rom === "Brix") this.currRom = this.brix;
+		else if (rom === "Space Invaders") this.currRom = this.invaders;
+		else if (rom === "Pong") this.currRom = this.pong;
+		else if (rom === "Tank") this.currRom = this.tank;
+		else if (rom === "Tetris") this.currRom = this.tetris;
+		else if (rom === "Vbrix") this.currRom = this.vbrix;
+		else if (rom === "Vers") this.currRom = this.vers;
 
 		this.initialize();
-	}
+	};
 
 	// Parses the rom data into an unsigned char array
 	this.initialize = function(){
@@ -349,9 +350,9 @@ function ROM(){
 
 		var j = 0;
 
-		for(i = 0; i < this.currRom.length; i += 2){
+		for(var i = 0; i < this.currRom.length; i += 2){
 			this.src[j] = parseInt(this.currRom.slice(i, i+2), 16);
 			j += 1;
 		}
-	}
+	};
 }
