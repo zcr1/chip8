@@ -14,7 +14,7 @@ $(function(){
 	colorPicker(chip);
 	keyboardInput(chip);
 
-	eventLoop(chip)
+	eventLoop(chip);
 });
 
 function eventLoop(chip){
@@ -47,7 +47,7 @@ function draw(chip, context){
 		for (var col = 0; col < 64; col++){
 
 			var pos = col + (row * 64);
-			if (chip.gfx[pos] == 1){
+			if (chip.gfx[pos] === 1){
 				context.fillRect(col * 10, row * 10, 10, 10);
 			}
 		}
@@ -85,7 +85,7 @@ function romPicker(chip){
 
 	$roms.change(function(){
 		var rom = new ROM();
-		rom.setRom($(this).val())
+		rom.setRom($(this).val());
 
 		chip.initialize();
 		chip.loadRom(rom);
@@ -148,7 +148,7 @@ function keyboardInput(chip){
 				chip.setKey(0xB, true);
 				break;
 			case (86): // v
-				chip.setKey(0xF, true)
+				chip.setKey(0xF, true);
 				break;
 		}
 	});
@@ -201,7 +201,7 @@ function keyboardInput(chip){
 				chip.setKey(0xB, false);
 				break;
 			case (86): // v
-				chip.setKey(0xF, false)
+				chip.setKey(0xF, false);
 				break;
 		}
 	});

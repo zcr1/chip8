@@ -1,4 +1,3 @@
-
 function Chip8(){
 	this.opcode = 0;
 	this.memory = new Uint8Array(4096); // 4K
@@ -30,103 +29,103 @@ function Chip8(){
 		this.setJumpTable();
 		this.setFontSet();
 		this.keyInit();
-	}
+	};
 
 	this.setJumpTable = function(){
 		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this), this.op2NNN.bind(this), this.op3XNN.bind(this),
 						this.op4XNN.bind(this), this.op5XY0.bind(this), this.op6XNN.bind(this), this.op7XNN.bind(this),
 						this.op8000.bind(this), this.op9XY0.bind(this), this.opANNN.bind(this), this.opBNNN.bind(this),
-						this.opCXNN.bind(this), this.opDXYN.bind(this), this.opE000.bind(this), this.opF000.bind(this)]
-	}
+						this.opCXNN.bind(this), this.opDXYN.bind(this), this.opE000.bind(this), this.opF000.bind(this)];
+	};
 
 	this.loadRom = function(rom){
 		for (var i = 0; i < rom.src.length; i++){
 			// Rom starts at memory location 0x200
 			this.memory[i + 0x200] = rom.src[i];
 		}
-	}
+	};
 
 	// Retrieve opcode (2 bytes)
 	this.fetchOpcode = function(){
-		this.opcode = this.memory[this.pc] << 8 | this.memory[this.pc + 1]
-	}
+		this.opcode = this.memory[this.pc] << 8 | this.memory[this.pc + 1];
+	};
 
 	this.decodeOpcode = function(){
 		this.jumpTable[(this.opcode & 0xF000) >> 12]();
-	}
+	};
 
 	this.op0NNN = function(){
 
 		// 00E0 Clears screen
-		if ((this.opcode & 0x000F) == 0x0000){
+		if ((this.opcode & 0x000F) === 0x0000){
 			this.clearDisplay();
 			this.drawFlag = true;
 		}
 
 		//00EE Returns from a subroutine
-		else if((this.opcode & 0x000F) == 0x000E){
-			this.sp -= 1
+		else if((this.opcode & 0x000F) === 0x000E){
+			this.sp -= 1;
 			this.pc = this.stack[this.sp];
 		}
 		this.pc += 2;
-	}
+	};
 
 	// Jumps to address NNN
 	this.op1NNN = function(){
 		this.pc = this.opcode & 0X0FFF;
-	}
+	};
 
 	// Calls subroutine at NNN
 	this.op2NNN = function(){
 		this.stack[this.sp] = this.pc;
 		this.sp += 1;
 		this.pc = this.opcode & 0x0FFF;
-	}
+	};
 
-	// Skips the next instruction if VX == NN
+	// Skips the next instruction if VX === NN
 	this.op3XNN = function(){
-		if ((this.V[(this.opcode & 0x0F00) >> 8]) == (this.opcode & 0x00FF)){
+		if ((this.V[(this.opcode & 0x0F00) >> 8]) === (this.opcode & 0x00FF)){
 			this.pc += 4;
 		}
 		else{
 			this.pc += 2;
 		}
-	}
+	};
 
-	// Skips the next instruction if VX !+ NN
+	// Skips the next instruction if VX != NN
 	this.op4XNN = function(){
-		if ((this.V[(this.opcode & 0x0F00) >> 8]) != (this.opcode & 0x00FF)){
+		if ((this.V[(this.opcode & 0x0F00) >> 8]) !== (this.opcode & 0x00FF)){
 			this.pc += 4;
 		}
 		else{
 			this.pc += 2;
 		}
-	}
+	};
 
 	// Skips the next instruction if VX equals VY
 	this.op5XY0 = function(){
 		var x = (this.opcode & 0x0F00) >> 8,
 			y = (this.opcode & 0x00F0) >> 4;
 
-		if(this.V[x] == this.V[y]){
+		if(this.V[x] === this.V[y]){
 			this.pc += 4;
 		}
 		else{
 			this.pc += 2;
 		}
-	}
+	};
 
 	// Sets VX to NN
 	this.op6XNN = function(){
 		this.V[(this.opcode & 0x0F00) >> 8] = this.opcode & 0x00FF;
 		this.pc += 2;
-	}
+	};
 
 	// Adds NN to VX
 	this.op7XNN = function(){
 		this.V[(this.opcode & 0x0F00) >> 8] += this.opcode & 0x00FF;
 		this.pc += 2;
-	}
+	};
 
 	// Jump table for 8XYN op codes (There is no 8 through D)
 	this.op8000 = function(){
@@ -135,7 +134,7 @@ function Chip8(){
 					this.op8XY6.bind(this), this.op8XY7.bind(this),,,,,,, this.op8XYE.bind(this)];
 
 		jump[(this.opcode & 0x000F)]();
-	}
+	};
 
 	// Sets VX = VY
 	this.op8XY0 = function(){
@@ -144,7 +143,7 @@ function Chip8(){
 
 		this.V[x] = this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Sets VX = VX OR VY
 	this.op8XY1 = function(){
@@ -153,7 +152,7 @@ function Chip8(){
 
 		this.V[x] |= this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Sets VX = VX AND VY
 	this.op8XY2 = function(){
@@ -162,7 +161,7 @@ function Chip8(){
 
 		this.V[x] &= this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Sets VX = VX XOR VY
 	this.op8XY3 = function(){
@@ -171,7 +170,7 @@ function Chip8(){
 
 		this.V[x] ^= this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Adds VY to VX. VF is set to carry
 	this.op8XY4 = function(){
@@ -189,7 +188,7 @@ function Chip8(){
 
 		this.V[x] += this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Subtract VY from VX. VF is set to 0 when there's a borrow, 1 otherwise
 	this.op8XY5 = function(){
@@ -205,7 +204,7 @@ function Chip8(){
 
 		this.V[x] -= this.V[y];
 		this.pc += 2;
-	}
+	};
 
 	// Right shift VX, VF = least significant bit of VX before shift
 	this.op8XY6 = function(){
@@ -214,7 +213,7 @@ function Chip8(){
 		this.V[15] = this.V[x] & 0x1;
 		this.V[x] >>= 1;
 		this.pc += 2;
-	}
+	};
 
 	// Sets VX to VY - VX. VF is set to - when there's a borrow and 1 otherwise
 	this.op8XY7 = function(){
@@ -230,7 +229,7 @@ function Chip8(){
 
 		this.V[x] = this.V[y] - this.V[x];
 		this.pc += 2;
-	}
+	};
 
 	// Left shift VX, VF = most significant bit of VX before shift
 	this.op8XYE = function(){
@@ -239,37 +238,38 @@ function Chip8(){
 		this.V[15] = this.V[x] >> 7;
 		this.V[x] <<= 1;
 		this.pc += 2;
-	}
+	};
 
 	// Skips the next instruction if VX doesn't equal VY
 	this.op9XY0 = function(){
 		var x = (this.opcode & 0x0F00) >> 8,
 			y = (this.opcode & 0x00F0) >> 4;
 
-		if (this.V[x] != this.V[y]){
+		if (this.V[x] !== this.V[y]){
 			this.pc += 4;
 		}
 		else{
 			this.pc += 2;
 		}
-	}
+	};
 
 	// Sets I to the address NNN
 	this.opANNN = function(){
 		this.I = this.opcode & 0x0FFF;
 		this.pc += 2;
-	}
+	};
+
 	// Jumps to the address NNN plus V0
 	this.opBNNN = function(){
 		this.pc = (this.opcode & 0x0FFF) + this.V[0];
-	}
+	};
 
 	// Sets VX to a random number and NN
 	this.opCXNN = function(){
 		var ran = Math.floor(Math.random() * 256);
 		this.V[(this.opcode & 0x0F00) >> 8] = ran & (this.opcode & 0x00FF);
 		this.pc += 2;
-	}
+	};
 
 	this.opDXYN = function(){
 		/* Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
@@ -288,11 +288,11 @@ function Chip8(){
 
 			for (var col = 0; col < 8; col++){
 
-				if ((pixel & (0x80 >> col)) != 0){
+				if ((pixel & (0x80 >> col)) !== 0){
 
 					var pos = x + col + ((y + row) * 64);
 
-					if(this.gfx[pos] == 1){
+					if(this.gfx[pos] === 1){
 						this.V[15] = 1;
 					}
 
@@ -303,14 +303,14 @@ function Chip8(){
 
 		this.drawFlag = true;
 		this.pc += 2;
-	}
+	};
 
 	this.opE000 = function(){
 		var x = (this.opcode & 0x0F00) >> 8;
 
 		// EX9E: Skip next instruction if key in VX is pressed
-		if ((this.opcode & 0x00FF) == 0x009E){
-			if (this.keys[this.V[x]] == true){
+		if ((this.opcode & 0x00FF) === 0x009E){
+			if (this.keys[this.V[x]] === true){
 				this.pc += 4;
 			}
 			else{
@@ -318,15 +318,15 @@ function Chip8(){
 			}
 		}
 		// EXA1: Skip next instruction if key in VX not pressed
-		else if ((this.opcode & 0x00FF) == 0x00A1){
-			if (this.keys[this.V[x]] == false){
+		else if ((this.opcode & 0x00FF) === 0x00A1){
+			if (this.keys[this.V[x]] === false){
 				this.pc += 4;
 			}
 			else{
 				this.pc += 2;
 			}
 		}
-	}
+	};
 
 	// Jump table wont' work for F000 opcodes because their naming scheme isn't in ascending order :(
 	this.opF000 = function(){
@@ -343,14 +343,14 @@ function Chip8(){
 				var keyPress = false;
 
 				for (var i = 0; i < 16; i++){
-					if (this.keys[i] == true){
+					if (this.keys[i] === true){
 						keyPress = true;
 						this.V[x] = i;
 					}
 				}
 
 				// key is not pressed yet, don't add to program counter
-				if (keyPress == false) return;
+				if (keyPress === false) return;
 				break;
 
 			case (0x0015):
@@ -410,41 +410,41 @@ function Chip8(){
 		}
 
 		this.pc += 2;
-	}
+	};
 
 	this.clearDisplay = function(){
 		for (var i = 0; i < this.gfx.length; i++){
 			this.gfx[i] = 0;
 		}
-	}
+	};
 
 	this.clearStack = function(){
 		for (var i = 0; i < this.stack.length; i++){
 			this.stack[i] = 0;
 		}
-	}
+	};
 
 	this.clearMemory = function(){
 		for (var i = 0; i < this.memory.length; i++){
 			this.memory[i] = 0;
 		}
-	}
+	};
 
 	this.clearRegisters = function(){
 		for (var i = 0; i < this.V.length; i++){
 			this.V[i] = 0;
 		}
-	}
+	};
 
 	this.setKey = function(key, bool){
 		this.keys[key] = bool;
-	}
+	};
 
 	this.keyInit = function(){
 		for (var i = 0; i < this.keys.length; i++){
 			this.keys[i] = false;
 		}
-	}
+	};
 
 	this.setFontSet = function(){
 		var fontSet = new Uint8Array(
@@ -468,20 +468,20 @@ function Chip8(){
 		for(var i = 0; i < fontSet.length; i++){
 			this.memory[i] = fontSet[i];
 		}
-	}
+	};
 
 	this.updateTimers = function(){
 		if (this.delayTimer > 0) this.delayTimer -= 1;
 		if (this.soundTimer > 0) this.soundTimer -= 1;
-	}
+	};
 
 	this.setBlockColor = function(color){
 		this.blockColor = color;
 		this.drawFlag = true;
-	}
+	};
 
 	this.setBackColor = function(color){
 		this.backColor = color;
 		this.drawFlag = true;
-	}
+	};
 }

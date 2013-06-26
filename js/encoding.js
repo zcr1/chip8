@@ -1,3 +1,5 @@
+"use strict";
+
 // String to hex
 function strToHex(str){
 	var hex = '';
