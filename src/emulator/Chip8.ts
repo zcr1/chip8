@@ -22,7 +22,7 @@ export class Chip8 {
 		this.vRegisters = new Uint8Array(16);
 
 		// Used to quickly jump to different coroutines
-		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this)];
+		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this), this.op2NNN.bind(this)];
 	}
 
 	fetchNextOpcode() {
@@ -51,7 +51,7 @@ export class Chip8 {
 
 	/*
 	 ** Opcodes
-	 ****************************************************************/
+	 *****************************************************************/
 
 	// 00E0 Clears screen
 	// 00EE Returns from a subroutine
@@ -67,8 +67,15 @@ export class Chip8 {
 		this.programCounter += 2;
 	}
 
-	// Jumps to address NNN
+	// 1NNN Jumps to address NNN
 	op1NNN() {
+		this.programCounter = this.currentOpcode & 0x0fff;
+	}
+
+	// 2NNN Calls subroutine at NNN
+	op2NNN() {
+		this.stack[this.stackPointer] = this.programCounter;
+		this.stackPointer += 1;
 		this.programCounter = this.currentOpcode & 0x0fff;
 	}
 }

@@ -35,4 +35,14 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.programCounter).toBe(0x0234);
 	});
+
+	test('2NNN calls subroutine at NNN', () => {
+		chip.programCounter = 4;
+		chip.currentOpcode = 0x2345;
+		chip.runCurrentOpcode();
+
+		expect(chip.stack[0]).toBe(4);
+		expect(chip.stackPointer).toBe(1);
+		expect(chip.programCounter).toBe(0x0345);
+	});
 });
