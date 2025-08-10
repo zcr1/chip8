@@ -102,4 +102,12 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.vRegisters[3]).toBe(0x0045);
 	});
+
+	test('7XNN Adds NN to VX', () => {
+		chip.currentOpcode = 0x7945;
+		chip.vRegisters[9] = 0x33;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[9]).toBe(0x0078);
+	});
 });

@@ -30,6 +30,7 @@ export class Chip8 {
 			this.op4XNN.bind(this),
 			this.op5XY0.bind(this),
 			this.op6XNN.bind(this),
+			this.op7XNN.bind(this),
 		];
 	}
 
