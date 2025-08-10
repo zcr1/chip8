@@ -57,6 +57,16 @@ export class Chip8 {
 		this.stack.fill(0);
 	}
 
+	// Returns the register value in an opcode i.e. 0x4311 => 0x3
+	getOpcodeRegister() {
+		return (this.currentOpcode & 0x0f00) >> 8;
+	}
+
+	// Returns the NN value in an opcode i.e. 0x4311 => 0x11
+	getOpcodeValue() {
+		return this.currentOpcode & 0x00ff;
+	}
+
 	/*
 	 ** Opcodes
 	 *****************************************************************/
@@ -89,10 +99,10 @@ export class Chip8 {
 
 	// 3XNN Skips the next instruction if VX equals NN
 	op3XNN() {
-		const registerValue = this.vRegisters[(this.currentOpcode & 0x0f00) >> 8];
-		const opcodeValue = this.currentOpcode & 0x00ff;
+		const registerValue = this.getOpcodeRegister();
+		const opcodeValue = this.getOpcodeValue();
 
-		if (registerValue === opcodeValue) {
+		if (this.vRegisters[registerValue] === opcodeValue) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
@@ -101,12 +111,10 @@ export class Chip8 {
 
 	// 4XNN Skips the next instruction if VX does not equal NN
 	op4XNN() {
-		const registerValue = this.vRegisters[(this.currentOpcode & 0x0f00) >> 8];
-		const opcodeValue = this.currentOpcode & 0x00ff;
+		const registerValue = this.getOpcodeRegister();
+		const opcodeValue = this.getOpcodeValue();
 
-		console.log(registerValue, opcodeValue);
-
-		if (registerValue !== opcodeValue) {
+		if (this.vRegisters[registerValue] !== opcodeValue) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
@@ -127,10 +135,19 @@ export class Chip8 {
 
 	// 6XNN Sets VX to NN
 	op6XNN() {
-		const opcodeValue = this.currentOpcode & 0x00ff;
-		const register = (this.currentOpcode & 0x0f00) >> 8;
+		const registerValue = this.getOpcodeRegister();
+		const opcodeValue = this.getOpcodeValue();
 
-		this.vRegisters[register] = opcodeValue;
+		this.vRegisters[registerValue] = opcodeValue;
+		this.programCounter += 2;
+	}
+
+	// 7XNN Adds NN to VX
+	op7XNN() {
+		const registerValue = this.getOpcodeRegister();
+		const opcodeValue = this.getOpcodeValue();
+
+		this.vRegisters[registerValue] += opcodeValue;
 		this.programCounter += 2;
 	}
 }
