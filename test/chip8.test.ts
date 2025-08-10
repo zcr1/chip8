@@ -12,20 +12,20 @@ describe('Chip8 Opcode Tests', () => {
 	});
 
 	test('0EE0 clears screen', () => {
+		chip.graphics.fill(1);
+		chip.currentOpcode = 0x00e0;
+		chip.runCurrentOpcode();
+
+		expect(isZeroed(chip.graphics)).toBeTruthy();
+		expect(chip.programCounter).toBe(2);
+	});
+
+	test('0EEE returns from a subroutine', () => {
 		chip.currentOpcode = 0x00ee;
 		chip.stack[chip.stackPointer++] = 0xf0;
 		chip.runCurrentOpcode();
 
-		expect(isZeroed(chip.graphics)).toBeTruthy();
-		expect(chip.programCounter).toBe;
+		expect(chip.programCounter).toBe(0xf2);
+		expect(chip.stackPointer).toBe(0);
 	});
-
-	// test('0EEE', () => {
-	// 	chip.currentOpcode = 0x00ee;
-	// 	chip.stack[chip.stackPointer++] = 0xf0;
-	// 	chip.runCurrentOpcode();
-
-	// 	// Adds 2 to the program counter as well
-	// 	equal(chip.pc, 0xf2, 'Returns from a subroutine');
-	// });
 });
