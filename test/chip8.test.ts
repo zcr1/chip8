@@ -28,4 +28,11 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.programCounter).toBe(0xf2);
 		expect(chip.stackPointer).toBe(0);
 	});
+
+	test('01NNN jumps to address NNN', () => {
+		chip.currentOpcode = 0x1234;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(0x0234);
+	});
 });

@@ -3,7 +3,7 @@ export class Chip8 {
 	drawFlag: boolean;
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
-	jumpTable: [Function];
+	jumpTable: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
 	programCounter: number;
 	stack: Uint16Array<ArrayBuffer>;
@@ -22,7 +22,7 @@ export class Chip8 {
 		this.vRegisters = new Uint8Array(16);
 
 		// Used to quickly jump to different coroutines
-		this.jumpTable = [this.op0NNN.bind(this)];
+		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this)];
 	}
 
 	fetchNextOpcode() {
@@ -49,8 +49,10 @@ export class Chip8 {
 		this.stack.fill(0);
 	}
 
-	// Opcodes
-	//////////////////////////////////////////////////////////////////////////////////
+	/*
+	 ** Opcodes
+	 ****************************************************************/
+
 	// 00E0 Clears screen
 	// 00EE Returns from a subroutine
 	op0NNN() {
@@ -63,5 +65,10 @@ export class Chip8 {
 		}
 
 		this.programCounter += 2;
+	}
+
+	// Jumps to address NNN
+	op1NNN() {
+		this.programCounter = this.currentOpcode & 0x0fff;
 	}
 }
