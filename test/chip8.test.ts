@@ -1,7 +1,7 @@
 import { Chip8 } from '../src/emulator/Chip8';
 
 function isZeroed(array: Uint8Array<ArrayBuffer>) {
-	return array.every(e => e === 0);
+	return array.every(x => x === 0);
 }
 
 describe('Chip8 Opcode Tests', () => {
@@ -94,5 +94,12 @@ describe('Chip8 Opcode Tests', () => {
 		chip.runCurrentOpcode();
 
 		expect(chip.programCounter).toBe(2);
+	});
+
+	test('6XNN Sets VX to NN', () => {
+		chip.currentOpcode = 0x6345;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[3]).toBe(0x0045);
 	});
 });

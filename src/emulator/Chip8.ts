@@ -29,6 +29,7 @@ export class Chip8 {
 			this.op3XNN.bind(this),
 			this.op4XNN.bind(this),
 			this.op5XY0.bind(this),
+			this.op6XNN.bind(this),
 		];
 	}
 
@@ -122,5 +123,14 @@ export class Chip8 {
 		} else {
 			this.programCounter += 2;
 		}
+	}
+
+	// 6XNN Sets VX to NN
+	op6XNN() {
+		const opcodeValue = this.currentOpcode & 0x00ff;
+		const register = (this.currentOpcode & 0x0f00) >> 8;
+
+		this.vRegisters[register] = opcodeValue;
+		this.programCounter += 2;
 	}
 }
