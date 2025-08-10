@@ -77,4 +77,22 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.programCounter).toBe(2);
 	});
+
+	test('5XY0 Skips the next instruction if VX === VY', () => {
+		chip.currentOpcode = 0x5340;
+		chip.vRegisters[3] = 1;
+		chip.vRegisters[4] = 1;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('5XY0 Does not skip the next instruction if VX !== VY', () => {
+		chip.currentOpcode = 0x5340;
+		chip.vRegisters[3] = 1;
+		chip.vRegisters[4] = 2;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+	});
 });

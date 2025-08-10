@@ -28,6 +28,7 @@ export class Chip8 {
 			this.op2NNN.bind(this),
 			this.op3XNN.bind(this),
 			this.op4XNN.bind(this),
+			this.op5XY0.bind(this),
 		];
 	}
 
@@ -105,6 +106,18 @@ export class Chip8 {
 		console.log(registerValue, opcodeValue);
 
 		if (registerValue !== opcodeValue) {
+			this.programCounter += 4;
+		} else {
+			this.programCounter += 2;
+		}
+	}
+
+	// 5XY0 Skips the next instruction if VX equals VY
+	op5XY0() {
+		const xRegister = (this.currentOpcode & 0x0f00) >> 8;
+		const yRegister = (this.currentOpcode & 0x00f0) >> 4;
+
+		if (this.vRegisters[xRegister] === this.vRegisters[yRegister]) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
