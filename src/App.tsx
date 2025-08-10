@@ -1,12 +1,17 @@
 import './App.css';
 
+import { useAppStore } from './store';
+
 const App = () => {
-  return (
-    <div className="content">
-      <h1>Rsbuild with React</h1>
-      <p>Start building amazing things with Rsbuild.</p>
-    </div>
-  );
+	const bears = useAppStore(state => state.bears);
+	const incrementBears = useAppStore(state => state.increase);
+
+	return (
+		<div className="content">
+			<h1>{bears}</h1>
+			<button onClick={incrementBears}>Click me</button>
+		</div>
+	);
 };
 
 export default App;
