@@ -22,7 +22,13 @@ export class Chip8 {
 		this.vRegisters = new Uint8Array(16);
 
 		// Used to quickly jump to different coroutines
-		this.jumpTable = [this.op0NNN.bind(this), this.op1NNN.bind(this), this.op2NNN.bind(this), this.op3XNN.bind(this)];
+		this.jumpTable = [
+			this.op0NNN.bind(this),
+			this.op1NNN.bind(this),
+			this.op2NNN.bind(this),
+			this.op3XNN.bind(this),
+			this.op4XNN.bind(this),
+		];
 	}
 
 	fetchNextOpcode() {
@@ -81,10 +87,24 @@ export class Chip8 {
 
 	// 3XNN Skips the next instruction if VX equals NN
 	op3XNN() {
-		const vX = this.vRegisters[(this.currentOpcode & 0x0f00) >> 8];
-		const nN = this.currentOpcode & 0x00ff;
+		const registerValue = this.vRegisters[(this.currentOpcode & 0x0f00) >> 8];
+		const opcodeValue = this.currentOpcode & 0x00ff;
 
-		if (vX === nN) {
+		if (registerValue === opcodeValue) {
+			this.programCounter += 4;
+		} else {
+			this.programCounter += 2;
+		}
+	}
+
+	// 4XNN Skips the next instruction if VX does not equal NN
+	op4XNN() {
+		const registerValue = this.vRegisters[(this.currentOpcode & 0x0f00) >> 8];
+		const opcodeValue = this.currentOpcode & 0x00ff;
+
+		console.log(registerValue, opcodeValue);
+
+		if (registerValue !== opcodeValue) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;

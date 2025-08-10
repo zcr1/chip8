@@ -61,4 +61,20 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.programCounter).toBe(2);
 	});
+
+	test('4XNN Skips the next instruction if VX !== NN', () => {
+		chip.currentOpcode = 0x4245;
+		chip.vRegisters[2] = 0x22;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('4XNN Does not skip the next instruction if VX === NN', () => {
+		chip.currentOpcode = 0x4245;
+		chip.vRegisters[2] = 0x45;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+	});
 });
