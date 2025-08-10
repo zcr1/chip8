@@ -4,6 +4,7 @@ export class Chip8 {
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
 	jumpTable: Array<() => void>;
+	jumpTable8XYN: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
 	programCounter: number;
 	stack: Uint16Array<ArrayBuffer>;
@@ -32,6 +33,10 @@ export class Chip8 {
 			this.op6XNN.bind(this),
 			this.op7XNN.bind(this),
 		];
+
+		// 8XYN op codes has a sub jump table, with empty values for
+		// 8 through D
+		this.jumpTable8XYN = [];
 	}
 
 	fetchNextOpcode() {
@@ -58,13 +63,18 @@ export class Chip8 {
 		this.stack.fill(0);
 	}
 
-	// Returns the register value in an opcode i.e. 0x4311 => 0x3
-	getOpcodeRegister() {
+	// Returns the register value in an opcode X i.e. 0x4312 => 0x3
+	getOpcodeRegisterX() {
 		return (this.currentOpcode & 0x0f00) >> 8;
 	}
 
+	// Returns the register value in an opcode Y i.e. 0x4312 => 0x1
+	getOpcodeRegisterY() {
+		return (this.currentOpcode & 0x00f0) >> 4;
+	}
+
 	// Returns the NN value in an opcode i.e. 0x4311 => 0x11
-	getOpcodeValue() {
+	getOpcodeNN() {
 		return this.currentOpcode & 0x00ff;
 	}
 
@@ -100,8 +110,8 @@ export class Chip8 {
 
 	// 3XNN Skips the next instruction if VX equals NN
 	op3XNN() {
-		const registerValue = this.getOpcodeRegister();
-		const opcodeValue = this.getOpcodeValue();
+		const registerValue = this.getOpcodeRegisterX();
+		const opcodeValue = this.getOpcodeNN();
 
 		if (this.vRegisters[registerValue] === opcodeValue) {
 			this.programCounter += 4;
@@ -112,8 +122,8 @@ export class Chip8 {
 
 	// 4XNN Skips the next instruction if VX does not equal NN
 	op4XNN() {
-		const registerValue = this.getOpcodeRegister();
-		const opcodeValue = this.getOpcodeValue();
+		const registerValue = this.getOpcodeRegisterX();
+		const opcodeValue = this.getOpcodeNN();
 
 		if (this.vRegisters[registerValue] !== opcodeValue) {
 			this.programCounter += 4;
@@ -124,8 +134,8 @@ export class Chip8 {
 
 	// 5XY0 Skips the next instruction if VX equals VY
 	op5XY0() {
-		const xRegister = (this.currentOpcode & 0x0f00) >> 8;
-		const yRegister = (this.currentOpcode & 0x00f0) >> 4;
+		const xRegister = this.getOpcodeRegisterX();
+		const yRegister = this.getOpcodeRegisterY();
 
 		if (this.vRegisters[xRegister] === this.vRegisters[yRegister]) {
 			this.programCounter += 4;
@@ -136,8 +146,8 @@ export class Chip8 {
 
 	// 6XNN Sets VX to NN
 	op6XNN() {
-		const registerValue = this.getOpcodeRegister();
-		const opcodeValue = this.getOpcodeValue();
+		const registerValue = this.getOpcodeRegisterX();
+		const opcodeValue = this.getOpcodeNN();
 
 		this.vRegisters[registerValue] = opcodeValue;
 		this.programCounter += 2;
@@ -145,10 +155,24 @@ export class Chip8 {
 
 	// 7XNN Adds NN to VX
 	op7XNN() {
-		const registerValue = this.getOpcodeRegister();
-		const opcodeValue = this.getOpcodeValue();
+		const registerValue = this.getOpcodeRegisterX();
+		const opcodeValue = this.getOpcodeNN();
 
 		this.vRegisters[registerValue] += opcodeValue;
 		this.programCounter += 2;
 	}
+
+	// Calls jumpTable8XYN
+	op8000() {
+		this.jumpTable8XYN[this.currentOpcode & 0x000f]();
+	}
+
+	// op8XY0 Sets VX = VY
+	// op8XY0() {
+	// 	var x = (this.opcode & 0x0f00) >> 8,
+	// 		y = (this.opcode & 0x00f0) >> 4;
+
+	// 	this.V[x] = this.V[y];
+	// 	this.pc += 2;
+	// }
 }
