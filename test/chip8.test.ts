@@ -45,4 +45,20 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.stackPointer).toBe(1);
 		expect(chip.programCounter).toBe(0x0345);
 	});
+
+	test('3XNN Skips the next instruction if VX === NN', () => {
+		chip.currentOpcode = 0x3345;
+		chip.vRegisters[3] = 0x45;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('3XNN Does not skip the next instruction if VX !== NN', () => {
+		chip.currentOpcode = 0x3345;
+		chip.vRegisters[3] = 0x46;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+	});
 });
