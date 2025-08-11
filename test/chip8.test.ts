@@ -110,4 +110,12 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.vRegisters[9]).toBe(0x0078);
 	});
+
+	test('8XY0 Sets VX = VY', () => {
+		chip.currentOpcode = 0x8120;
+		chip.vRegisters[2] = 0x33;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[2]).toBe(chip.vRegisters[1]);
+	});
 });
