@@ -1,6 +1,6 @@
 export class Chip8 {
 	currentOpcode: number;
-	drawFlag: boolean;
+	drawFlag: boolean; // TODO needed?
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
 	jumpTable: Array<() => void>;
@@ -9,7 +9,7 @@ export class Chip8 {
 	programCounter: number;
 	stack: Uint16Array<ArrayBuffer>;
 	stackPointer: number;
-	vRegisters: Uint8Array<ArrayBuffer>; // internal registers V0...VF
+	vRegisters: Uint8Array<ArrayBuffer>; // registers V0...VF
 
 	constructor() {
 		this.currentOpcode = 0;
@@ -42,6 +42,7 @@ export class Chip8 {
 			this.op8XY2.bind(this),
 			this.op8XY3.bind(this),
 			this.op8XY4.bind(this),
+			this.op8XY5.bind(this),
 		];
 	}
 
@@ -222,6 +223,21 @@ export class Chip8 {
 		}
 
 		this.vRegisters[xRegister] += this.vRegisters[yRegister];
+		this.programCounter += 2;
+	}
+
+	// 8XY5 Subtract VY from VX. VF is set to 0 when there's a borrow, 1 otherwise
+	op8XY5() {
+		const xRegister = this.getOpcodeX();
+		const yRegister = this.getOpcodeY();
+
+		if (this.vRegisters[yRegister] > this.vRegisters[xRegister]) {
+			this.vRegisters[15] = 0;
+		} else {
+			this.vRegisters[15] = 1;
+		}
+
+		this.vRegisters[xRegister] -= this.vRegisters[yRegister];
 		this.programCounter += 2;
 	}
 }

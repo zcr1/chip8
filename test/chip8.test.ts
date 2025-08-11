@@ -128,7 +128,7 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[1]).toBe(0x33 | 0x11);
 	});
 
-	test('op8XY2 Sets VX = VX & VY', () => {
+	test('8XY2 Sets VX = VX & VY', () => {
 		chip.currentOpcode = 0x8122;
 		chip.vRegisters[1] = 0x33;
 		chip.vRegisters[2] = 0x11;
@@ -137,7 +137,7 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[1]).toBe(0x33 & 0x11);
 	});
 
-	test('op8XY3 Sets VX = VX xor VY', () => {
+	test('8XY3 Sets VX = VX xor VY', () => {
 		chip.currentOpcode = 0x8123;
 		chip.vRegisters[1] = 0x33;
 		chip.vRegisters[2] = 0x11;
@@ -146,7 +146,7 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[1]).toBe(0x33 ^ 0x11);
 	});
 
-	test('op8XY4 Adds VY to VX no carry bit', () => {
+	test('8XY4 Adds VY to VX no carry bit', () => {
 		chip.currentOpcode = 0x8014;
 		chip.vRegisters[0] = 0x33;
 		chip.vRegisters[1] = 0x11;
@@ -156,7 +156,7 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[15]).toBe(0);
 	});
 
-	test('op8XY4 Adds VY to VX with carry bit', () => {
+	test('8XY4 Adds VY to VX with carry bit', () => {
 		chip.currentOpcode = 0x8014;
 		chip.vRegisters[0] = 0xff;
 		chip.vRegisters[1] = 0x01;
@@ -164,5 +164,25 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.vRegisters[0]).toBe(0);
 		expect(chip.vRegisters[15]).toBe(1);
+	});
+
+	test('8XY5 Subtracts VY from VX no borrow', () => {
+		chip.currentOpcode = 0x8015;
+		chip.vRegisters[0] = 0x55;
+		chip.vRegisters[1] = 0x44;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[0]).toBe(0x55 - 0x44);
+		expect(chip.vRegisters[15]).toBe(1);
+	});
+
+	test('8XY5 Subtracts VY from VX with borrow', () => {
+		chip.currentOpcode = 0x8015;
+		chip.vRegisters[0] = 0x10;
+		chip.vRegisters[1] = 0x20;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[0]).toBe(0xf0);
+		expect(chip.vRegisters[15]).toBe(0);
 	});
 });
