@@ -36,7 +36,7 @@ export class Chip8 {
 		];
 
 		// 8XYN op codes has a sub jump table with empty values for 8 through D
-		this.jumpTable8XYN = [this.op8XY0.bind(this)];
+		this.jumpTable8XYN = [this.op8XY0.bind(this), this.op8XY1.bind(this)];
 	}
 
 	fetchNextOpcode() {
@@ -173,6 +173,15 @@ export class Chip8 {
 		const yRegister = this.getOpcodeY();
 
 		this.vRegisters[xRegister] = this.vRegisters[yRegister];
+		this.programCounter += 2;
+	}
+
+	// 8XY1  Sets VX = VX | VY
+	op8XY1() {
+		const xRegister = this.getOpcodeX();
+		const yRegister = this.getOpcodeY();
+
+		this.vRegisters[xRegister] |= this.vRegisters[yRegister];
 		this.programCounter += 2;
 	}
 }
