@@ -145,4 +145,24 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.vRegisters[1]).toBe(0x33 ^ 0x11);
 	});
+
+	test('op8XY4 Adds VY to VX no carry bit', () => {
+		chip.currentOpcode = 0x8014;
+		chip.vRegisters[0] = 0x33;
+		chip.vRegisters[1] = 0x11;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[0]).toBe(0x44);
+		expect(chip.vRegisters[15]).toBe(0);
+	});
+
+	test('op8XY4 Adds VY to VX with carry bit', () => {
+		chip.currentOpcode = 0x8014;
+		chip.vRegisters[0] = 0xff;
+		chip.vRegisters[1] = 0x01;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[0]).toBe(0);
+		expect(chip.vRegisters[15]).toBe(1);
+	});
 });

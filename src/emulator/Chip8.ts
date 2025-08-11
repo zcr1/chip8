@@ -9,7 +9,7 @@ export class Chip8 {
 	programCounter: number;
 	stack: Uint16Array<ArrayBuffer>;
 	stackPointer: number;
-	vRegisters: Uint8Array<ArrayBuffer>;
+	vRegisters: Uint8Array<ArrayBuffer>; // internal registers V0...VF
 
 	constructor() {
 		this.currentOpcode = 0;
@@ -35,12 +35,13 @@ export class Chip8 {
 			this.op8XYN.bind(this),
 		];
 
-		// 8XYN op codes has a sub jump table with empty values for 8 through D
+		// 8XYN op codes have a sub jump table with empty values for 8 through D
 		this.jumpTable8XYN = [
 			this.op8XY0.bind(this),
 			this.op8XY1.bind(this),
 			this.op8XY2.bind(this),
 			this.op8XY3.bind(this),
+			this.op8XY4.bind(this),
 		];
 	}
 
@@ -206,6 +207,21 @@ export class Chip8 {
 		const yRegister = this.getOpcodeY();
 
 		this.vRegisters[xRegister] ^= this.vRegisters[yRegister];
+		this.programCounter += 2;
+	}
+
+	// 8XY4 Adds VY to VX. VF is set to carry
+	op8XY4() {
+		const xRegister = this.getOpcodeX();
+		const yRegister = this.getOpcodeY();
+
+		if (this.vRegisters[yRegister] > 0xff - this.vRegisters[xRegister]) {
+			this.vRegisters[15] = 1;
+		} else {
+			this.vRegisters[15] = 0;
+		}
+
+		this.vRegisters[xRegister] += this.vRegisters[yRegister];
 		this.programCounter += 2;
 	}
 }
