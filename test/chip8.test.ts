@@ -185,4 +185,13 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[0]).toBe(0xf0);
 		expect(chip.vRegisters[15]).toBe(0);
 	});
+
+	test('8XY6 Right shift VX', () => {
+		chip.currentOpcode = 0x8126;
+		chip.vRegisters[1] = 0x0f;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[1]).toBe(0x0f >> 1);
+		expect(chip.vRegisters[15]).toBe(1);
+	});
 });

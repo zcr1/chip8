@@ -2,7 +2,7 @@ export class Chip8 {
 	currentOpcode: number;
 	drawFlag: boolean; // TODO needed?
 	graphics: Uint8Array<ArrayBuffer>;
-	indexRegister: number;
+	index: number;
 	jumpTable: Array<() => void>;
 	jumpTable8XYN: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
@@ -15,7 +15,7 @@ export class Chip8 {
 		this.currentOpcode = 0;
 		this.drawFlag = true;
 		this.graphics = new Uint8Array(2048);
-		this.indexRegister = 0;
+		this.index = 0;
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
 		this.stack = new Uint16Array(16);
@@ -43,6 +43,7 @@ export class Chip8 {
 			this.op8XY3.bind(this),
 			this.op8XY4.bind(this),
 			this.op8XY5.bind(this),
+			this.op8XY6.bind(this),
 		];
 	}
 
@@ -141,10 +142,10 @@ export class Chip8 {
 
 	// 5XY0 Skips the next instruction if VX equals VY
 	op5XY0() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		if (this.vRegisters[xRegister] === this.vRegisters[yRegister]) {
+		if (this.vRegisters[x] === this.vRegisters[y]) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
@@ -177,67 +178,91 @@ export class Chip8 {
 
 	// 8XY0 Sets VX = VY
 	op8XY0() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		this.vRegisters[xRegister] = this.vRegisters[yRegister];
+		this.vRegisters[x] = this.vRegisters[y];
 		this.programCounter += 2;
 	}
 
 	// 8XY1 Sets VX = VX | VY
 	op8XY1() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		this.vRegisters[xRegister] |= this.vRegisters[yRegister];
+		this.vRegisters[x] |= this.vRegisters[y];
 		this.programCounter += 2;
 	}
 
 	// 8XY2 Sets VX = VX & VY
 	op8XY2() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		this.vRegisters[xRegister] &= this.vRegisters[yRegister];
+		this.vRegisters[x] &= this.vRegisters[y];
 		this.programCounter += 2;
 	}
 
 	// 8XY3 Sets VX = VX xor VY
 	op8XY3() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		this.vRegisters[xRegister] ^= this.vRegisters[yRegister];
+		this.vRegisters[x] ^= this.vRegisters[y];
 		this.programCounter += 2;
 	}
 
-	// 8XY4 Adds VY to VX. VF is set to carry
+	// 8XY4 Sets VX = VX + VY. VF is set to carry
 	op8XY4() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		if (this.vRegisters[yRegister] > 0xff - this.vRegisters[xRegister]) {
+		if (this.vRegisters[y] > 0xff - this.vRegisters[x]) {
 			this.vRegisters[15] = 1;
 		} else {
 			this.vRegisters[15] = 0;
 		}
 
-		this.vRegisters[xRegister] += this.vRegisters[yRegister];
+		this.vRegisters[x] += this.vRegisters[y];
 		this.programCounter += 2;
 	}
 
-	// 8XY5 Subtract VY from VX. VF is set to 0 when there's a borrow, 1 otherwise
+	// 8XY5 Sets VX = VX - VY. VF is set to 0 when there's a borrow, 1 otherwise
 	op8XY5() {
-		const xRegister = this.getOpcodeX();
-		const yRegister = this.getOpcodeY();
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
-		if (this.vRegisters[yRegister] > this.vRegisters[xRegister]) {
+		if (this.vRegisters[y] > this.vRegisters[x]) {
 			this.vRegisters[15] = 0;
 		} else {
 			this.vRegisters[15] = 1;
 		}
 
-		this.vRegisters[xRegister] -= this.vRegisters[yRegister];
+		this.vRegisters[x] -= this.vRegisters[y];
+		this.programCounter += 2;
+	}
+
+	// 8XY6 Right shift VX, VF is set to least significant bit of VX before shift
+	op8XY6() {
+		const x = this.getOpcodeX();
+
+		this.vRegisters[15] = this.vRegisters[x] & 0x1;
+		this.vRegisters[x] >>= 1;
+		this.programCounter += 2;
+	}
+
+	// 8XY7 Sets VX = VY - VX. VF is set to 0 when there's a borrow and 1 otherwise
+	op8XY7() {
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
+
+		if (this.vRegisters[x] > this.vRegisters[y]) {
+			this.vRegisters[15] = 0;
+		} else {
+			this.vRegisters[15] = 1;
+		}
+
+		this.vRegisters[x] = this.vRegisters[y] - this.vRegisters[x];
 		this.programCounter += 2;
 	}
 }
