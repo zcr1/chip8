@@ -44,6 +44,14 @@ export class Chip8 {
 			this.op8XY4.bind(this),
 			this.op8XY5.bind(this),
 			this.op8XY6.bind(this),
+			this.op8XY7.bind(this),
+			() => {},
+			() => {},
+			() => {},
+			() => {},
+			() => {},
+			() => {},
+			this.op8XYE.bind(this),
 		];
 	}
 
@@ -172,7 +180,6 @@ export class Chip8 {
 
 	// Pass through that calls jumpTable8XYN
 	op8XYN() {
-		console.log(this.currentOpcode);
 		this.jumpTable8XYN[this.currentOpcode & 0x000f]();
 	}
 
@@ -263,6 +270,15 @@ export class Chip8 {
 		}
 
 		this.vRegisters[x] = this.vRegisters[y] - this.vRegisters[x];
+		this.programCounter += 2;
+	}
+
+	// 8XYE Left shift VX, VF is set to most significant bit of VX before shift
+	op8XYE() {
+		const x = this.getOpcodeX();
+
+		this.vRegisters[15] = this.vRegisters[x] >> 0x7;
+		this.vRegisters[x] <<= 1;
 		this.programCounter += 2;
 	}
 }

@@ -194,4 +194,33 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[1]).toBe(0x0f >> 1);
 		expect(chip.vRegisters[15]).toBe(1);
 	});
+
+	test('8XY7 Sets VX = VY - VX. VF is set to 1 no borrow', () => {
+		chip.currentOpcode = 0x8127;
+		chip.vRegisters[1] = 15;
+		chip.vRegisters[2] = 20;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[1]).toBe(5);
+		expect(chip.vRegisters[15]).toBe(1);
+	});
+
+	test('8XY7 Sets VX = VY - VX. VF is set to 0 borrow', () => {
+		chip.currentOpcode = 0x8127;
+		chip.vRegisters[1] = 20;
+		chip.vRegisters[2] = 15;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[1]).toBe(0xfb);
+		expect(chip.vRegisters[15]).toBe(0);
+	});
+
+	test('8XYE Left shift VX, VF is set to most significant bit of VX', () => {
+		chip.currentOpcode = 0x812e;
+		chip.vRegisters[1] = 0x10;
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[1]).toBe(0x10 << 1);
+		expect(chip.vRegisters[15]).toBe(0);
+	});
 });
