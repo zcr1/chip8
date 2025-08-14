@@ -4,6 +4,8 @@ function isZeroed(array: Uint8Array<ArrayBuffer>) {
 	return array.every(x => x === 0);
 }
 
+const SCREEN_WIDTH = 64;
+
 describe('Chip8 Opcode Tests', () => {
 	let chip: Chip8;
 
@@ -281,5 +283,66 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.programCounter).toBe(2);
 
 		mockRandom.mockRestore();
+	});
+
+	test('DXYN Draws a sprite no collision', () => {
+		// load sprite into memory
+		const spriteData = new Uint8Array([0b11110000, 0b10010000]);
+		chip.indexRegister = 0x300;
+		chip.memory.set(spriteData, chip.indexRegister);
+
+		// 8x2 pixel at [10, 12]
+		chip.currentOpcode = 0xd012;
+		chip.vRegisters[0] = 10;
+		chip.vRegisters[1] = 12;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[15]).toBe(0);
+		expect(chip.programCounter).toBe(2);
+
+		// Top row of the sprite at (10, 12)
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 10]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 11]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 12]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 13]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 14]).toBe(0);
+
+		// Bottom row of the sprite at (10, 13)
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 10]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 11]).toBe(0);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 12]).toBe(0);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 13]).toBe(1);
+	});
+
+	test('DXYN Draws a sprite with collision', () => {
+		// load sprite sprite data
+		const spriteData = new Uint8Array([0b11110000, 0b10010000]);
+		chip.indexRegister = 0x300;
+		chip.memory.set(spriteData, chip.indexRegister);
+
+		// 8x2 pixel at [10, 12]
+		chip.currentOpcode = 0xd012;
+		chip.vRegisters[0] = 10;
+		chip.vRegisters[1] = 12;
+
+		chip.graphics[12 * SCREEN_WIDTH + 10] = 1; // Collision at (10, 12)
+
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[15]).toBe(1);
+
+		// Top row of the sprite at (10, 12)
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 10]).toBe(0);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 11]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 12]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 13]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 12 + 14]).toBe(0);
+
+		// Bottom row of the sprite at (10, 13)
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 10]).toBe(1);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 11]).toBe(0);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 12]).toBe(0);
+		expect(chip.graphics[SCREEN_WIDTH * 13 + 13]).toBe(1);
 	});
 });

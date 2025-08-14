@@ -37,6 +37,7 @@ export class Chip8 {
 			this.opANNN.bind(this),
 			this.opBNNN.bind(this),
 			this.opCXNN.bind(this),
+			this.opDXYN.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -316,6 +317,43 @@ export class Chip8 {
 		const rand = Math.floor(Math.random() * 256);
 
 		this.vRegisters[x] = rand & opecodeValue;
+		this.programCounter += 2;
+	}
+
+	// Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
+	// Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed
+	// on the left) starting from memory location I; I value doesn't change after the execution of this instruction.
+	// VF is set to 1 if screen pixels are flipped from set to unset when the sprite is drawn (a collision)
+	// and 0 otherwise.
+	opDXYN() {
+		const x = this.vRegisters[this.getOpcodeX()];
+		const y = this.vRegisters[this.getOpcodeY()];
+		const height = this.currentOpcode & 0x000f;
+		let pixel = 0;
+
+		this.vRegisters[15] = 0;
+
+		for (let row = 0; row < height; row++) {
+			pixel = this.memory[this.indexRegister + row];
+
+			for (let col = 0; col < 8; col++) {
+				if ((pixel & (0x80 >> col)) !== 0) {
+					const pos = x + col + (y + row) * 64;
+
+					// Collision
+					if (this.graphics[pos] === 1) {
+						this.vRegisters[15] = 1;
+					}
+
+					// Flip current pixel
+					this.graphics[pos] ^= 1;
+
+					console.log(pos, this.graphics[pos]);
+				}
+			}
+		}
+
+		// this.drawFlag = true;
 		this.programCounter += 2;
 	}
 }
