@@ -36,6 +36,7 @@ export class Chip8 {
 			this.op9XY0.bind(this),
 			this.opANNN.bind(this),
 			this.opBNNN.bind(this),
+			this.opCXNN.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -306,5 +307,15 @@ export class Chip8 {
 	// BNNN Jumps to the address NNN plus V0
 	opBNNN() {
 		this.programCounter = (this.currentOpcode & 0x0fff) + this.vRegisters[0];
+	}
+
+	// CXNN Sets VX to a random number (0-255) & NN
+	opCXNN() {
+		const x = this.getOpcodeX();
+		const opecodeValue = this.getOpcodeNN();
+		const rand = Math.floor(Math.random() * 256);
+
+		this.vRegisters[x] = rand & opecodeValue;
+		this.programCounter += 2;
 	}
 }
