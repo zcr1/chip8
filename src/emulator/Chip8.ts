@@ -1,5 +1,7 @@
 import typeface from './typeface';
 
+export const SCREEN_WIDTH = 64;
+
 export class Chip8 {
 	currentOpcode: number;
 	drawFlag: boolean; // TODO needed?
@@ -342,8 +344,9 @@ export class Chip8 {
 			pixel = this.memory[this.indexRegister + row];
 
 			for (let col = 0; col < 8; col++) {
-				if ((pixel & (0x80 >> col)) !== 0) {
-					const pos = x + col + (y + row) * 64;
+				const currentBit = pixel & (128 >> col);
+				if (currentBit !== 0) {
+					const pos = x + col + (y + row) * SCREEN_WIDTH;
 
 					// Collision
 					if (this.graphics[pos] === 1) {

@@ -1,10 +1,8 @@
-import { Chip8 } from '../src/emulator/Chip8';
+import { Chip8, SCREEN_WIDTH } from '../src/emulator/Chip8';
 
 function isZeroed(array: Uint8Array<ArrayBuffer>) {
 	return array.every(x => x === 0);
 }
-
-const SCREEN_WIDTH = 64;
 
 describe('Chip8 Opcode Tests', () => {
 	let chip: Chip8;
