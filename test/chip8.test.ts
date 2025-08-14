@@ -248,4 +248,12 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.indexRegister).toBe(0x111);
 	});
+
+	test('BNNN Jumps to the address NNN plus V0', () => {
+		chip.currentOpcode = 0xb111;
+		chip.vRegisters[0] = 0x55;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(0x111 + 0x55);
+	});
 });
