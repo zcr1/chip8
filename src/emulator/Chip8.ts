@@ -1,3 +1,5 @@
+import typeface from './typeface';
+
 export class Chip8 {
 	currentOpcode: number;
 	drawFlag: boolean; // TODO needed?
@@ -21,6 +23,9 @@ export class Chip8 {
 		this.stack = new Uint16Array(16);
 		this.stackPointer = 0;
 		this.vRegisters = new Uint8Array(16);
+
+		// Load font into memory
+		this.memory.set(typeface, 0);
 
 		// Used to quickly jump to different coroutines
 		this.jumpTable = [
@@ -347,8 +352,6 @@ export class Chip8 {
 
 					// Flip current pixel
 					this.graphics[pos] ^= 1;
-
-					console.log(pos, this.graphics[pos]);
 				}
 			}
 		}
