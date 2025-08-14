@@ -223,4 +223,22 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.vRegisters[1]).toBe(0x10 << 1);
 		expect(chip.vRegisters[15]).toBe(0);
 	});
+
+	test('9XY0 Skips the next instruction if VX does not equal VY', () => {
+		chip.currentOpcode = 0x9120;
+		chip.vRegisters[1] = 0x10;
+		chip.vRegisters[1] = 0x12;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('9XY0 Does not skip the next instruction if VX equals VY', () => {
+		chip.currentOpcode = 0x9120;
+		chip.vRegisters[1] = 0x12;
+		chip.vRegisters[2] = 0x12;
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+	});
 });

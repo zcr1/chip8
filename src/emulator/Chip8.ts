@@ -33,6 +33,7 @@ export class Chip8 {
 			this.op6XNN.bind(this),
 			this.op7XNN.bind(this),
 			this.op8XYN.bind(this),
+			this.op9XY0.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -280,5 +281,17 @@ export class Chip8 {
 		this.vRegisters[15] = this.vRegisters[x] >> 0x7;
 		this.vRegisters[x] <<= 1;
 		this.programCounter += 2;
+	}
+
+	// 9XY0 Skips the next instruction if VX doesn't equal VY
+	op9XY0() {
+		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
+
+		if (this.vRegisters[x] !== this.vRegisters[y]) {
+			this.programCounter += 4;
+		} else {
+			this.programCounter += 2;
+		}
 	}
 }
