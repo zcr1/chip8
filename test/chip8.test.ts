@@ -241,4 +241,11 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.programCounter).toBe(2);
 	});
+
+	test('ANNN Sets index register to the address NNN', () => {
+		chip.currentOpcode = 0xa111;
+		chip.runCurrentOpcode();
+
+		expect(chip.indexRegister).toBe(0x111);
+	});
 });

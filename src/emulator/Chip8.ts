@@ -2,7 +2,7 @@ export class Chip8 {
 	currentOpcode: number;
 	drawFlag: boolean; // TODO needed?
 	graphics: Uint8Array<ArrayBuffer>;
-	index: number;
+	indexRegister: number;
 	jumpTable: Array<() => void>;
 	jumpTable8XYN: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
@@ -15,7 +15,7 @@ export class Chip8 {
 		this.currentOpcode = 0;
 		this.drawFlag = true;
 		this.graphics = new Uint8Array(2048);
-		this.index = 0;
+		this.indexRegister = 0;
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
 		this.stack = new Uint16Array(16);
@@ -34,6 +34,7 @@ export class Chip8 {
 			this.op7XNN.bind(this),
 			this.op8XYN.bind(this),
 			this.op9XY0.bind(this),
+			this.opANNN.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -293,5 +294,11 @@ export class Chip8 {
 		} else {
 			this.programCounter += 2;
 		}
+	}
+
+	// ANNN Sets index register to the address NNN
+	opANNN() {
+		this.indexRegister = this.currentOpcode & 0x0fff;
+		this.programCounter += 2;
 	}
 }
