@@ -124,12 +124,11 @@ export class Chip8 {
 		if ((this.currentOpcode & 0x000f) === 0x0000) {
 			this.clearGraphics();
 			this.drawFlag = true;
+			this.programCounter += 2;
 		} else if ((this.currentOpcode & 0x000f) === 0x000e) {
 			this.stackPointer -= 1;
 			this.programCounter = this.stack[this.stackPointer];
 		}
-
-		this.programCounter += 2;
 	}
 
 	// 1NNN Jumps to address NNN

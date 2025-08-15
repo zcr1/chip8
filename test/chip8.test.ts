@@ -25,7 +25,7 @@ describe('Chip8 Opcode Tests', () => {
 		chip.stack[chip.stackPointer++] = 0xf0;
 		chip.runCurrentOpcode();
 
-		expect(chip.programCounter).toBe(0xf2);
+		expect(chip.programCounter).toBe(0xf0);
 		expect(chip.stackPointer).toBe(0);
 	});
 
