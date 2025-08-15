@@ -471,4 +471,34 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.memory[chip.indexRegister + 1]).toBe(3);
 		expect(chip.memory[chip.indexRegister + 2]).toBe(8);
 	});
+
+	test('FX55 Stores V0 to VX in memory starting at address', () => {
+		chip.currentOpcode = 0xf255;
+		chip.vRegisters[0] = 0x11;
+		chip.vRegisters[1] = 0x22;
+		chip.vRegisters[2] = 0x33;
+		chip.indexRegister = 5;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.vRegisters[0]).toBe(chip.memory[chip.indexRegister]);
+		expect(chip.vRegisters[1]).toBe(chip.memory[chip.indexRegister + 1]);
+		expect(chip.vRegisters[2]).toBe(chip.memory[chip.indexRegister + 2]);
+	});
+
+	test('FX65 Fills V0 to VX with values from memory starting at address I', () => {
+		chip.currentOpcode = 0xf265;
+		chip.memory[5] = 0x11;
+		chip.memory[6] = 0x22;
+		chip.memory[7] = 0x33;
+		chip.indexRegister = 5;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.vRegisters[0]).toBe(chip.memory[chip.indexRegister]);
+		expect(chip.vRegisters[1]).toBe(chip.memory[chip.indexRegister + 1]);
+		expect(chip.vRegisters[2]).toBe(chip.memory[chip.indexRegister + 2]);
+	});
 });
