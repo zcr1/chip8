@@ -4,26 +4,30 @@ export const SCREEN_WIDTH = 64;
 
 export class Chip8 {
 	currentOpcode: number;
+	delayTimer: number;
 	drawFlag: boolean; // TODO needed?
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
 	inputs: boolean[];
-	jumpTable: Array<() => void>;
 	jumpTable8XYN: Array<() => void>;
+	jumpTable: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
 	programCounter: number;
+	soundTimer: number;
 	stack: Uint16Array<ArrayBuffer>;
 	stackPointer: number;
 	vRegisters: Uint8Array<ArrayBuffer>; // registers V0...VF
 
 	constructor() {
 		this.currentOpcode = 0;
+		this.delayTimer = 0;
 		this.drawFlag = true;
 		this.graphics = new Uint8Array(2048);
 		this.indexRegister = 0;
 		this.inputs = new Array(16).fill(false);
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
+		this.soundTimer = 0;
 		this.stack = new Uint16Array(16);
 		this.stackPointer = 0;
 		this.vRegisters = new Uint8Array(16);
@@ -376,5 +380,88 @@ export class Chip8 {
 		} else if (opecodeValue === 0xa1) {
 			this.programCounter += this.inputs[x] ? 2 : 4;
 		}
+	}
+
+	// F000
+	opF000() {
+		const x = this.getOpcodeX();
+		const opecodeValue = this.getOpcodeNN();
+
+		switch (opecodeValue) {
+			// FX07 Sets VX to value of delay timer
+			case 0x07:
+				this.vRegisters[x] = this.delayTimer;
+				break;
+
+			// FX0A A key press is awaited then stored in VX
+			case 0x0a:
+				let keyPress = false;
+
+				for (let i = 0; i < 16; i++) {
+					if (this.inputs[i]) {
+						keyPress = true;
+						this.vRegisters[x] = i;
+					}
+				}
+
+				// key is not pressed yet, don't add to program counter
+				if (!keyPress) return;
+				break;
+
+			// FX15 Sets the delay timer to VX
+			case 0x15:
+				this.delayTimer = this.vRegisters[x];
+				break;
+
+			// FX18 Sets the sound timer to VX
+			case 0x18:
+				this.soundTimer = this.vRegisters[x];
+				break;
+
+			// FX1E Adds VX to I and stores carry bit in VF
+			case 0x1e:
+				if (this.indexRegister + this.vRegisters[x] > 0xfff) {
+					// carry bit
+					this.vRegisters[15] = 1;
+				} else {
+					this.vRegisters[15] = 0;
+				}
+
+				this.indexRegister += this.vRegisters[x];
+				break;
+
+			// FX29 Sets I to the location of the sprite for the character in VX.
+			// Characters 0-F are represented by a 4x5 font (5 bytes per character)
+			case 0x29:
+				this.indexRegister = this.vRegisters[x] * 0x5;
+				break;
+
+			// FX33 Stores the binary-coded decimal representation of VX
+			case 0x33:
+				this.memory[this.indexRegister] = this.vRegisters[x] / 100;
+				this.memory[this.indexRegister + 1] = (this.vRegisters[x] / 10) % 10;
+				this.memory[this.indexRegister + 2] = (this.vRegisters[x] % 100) % 10;
+				break;
+
+			// FX55 Stores V0 to VX in memory starting at address I
+			case 0x55:
+				for (let i = 0; i <= x; i++) {
+					this.memory[this.indexRegister + i] = this.vRegisters[i];
+				}
+
+				this.indexRegister += x + 1;
+				break;
+
+			// FX65: Fills V0 to VX with values from memory starting at address I
+			case 0x65:
+				for (let i = 0; i <= x; i++) {
+					this.vRegisters[i] = this.memory[this.indexRegister + i];
+				}
+
+				this.indexRegister += x + 1;
+				break;
+		}
+
+		this.programCounter += 2;
 	}
 }
