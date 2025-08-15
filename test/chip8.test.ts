@@ -382,4 +382,30 @@ describe('Chip8 Opcode Tests', () => {
 
 		expect(chip.programCounter).toBe(2);
 	});
+
+	test('FX07 Sets VX to value of delay timer', () => {
+		chip.currentOpcode = 0xf107;
+		chip.delayTimer = 30;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.vRegisters[1]).toBe(30);
+		expect(chip.programCounter).toBe(2);
+	});
+
+	test('FX0A A key press is awaited then stored in VX', () => {
+		chip.currentOpcode = 0xfe0a;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(0);
+		expect(chip.vRegisters[14]).toBe(0);
+
+		chip.inputs[10] = true;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.vRegisters[14]).toBe(10);
+	});
 });

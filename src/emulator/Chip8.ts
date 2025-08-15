@@ -52,6 +52,7 @@ export class Chip8 {
 			this.opCXNN.bind(this),
 			this.opDXYN.bind(this),
 			this.opE000.bind(this),
+			this.opF000.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -449,16 +450,18 @@ export class Chip8 {
 					this.memory[this.indexRegister + i] = this.vRegisters[i];
 				}
 
-				this.indexRegister += x + 1;
+				// Below depends on the interpreter
+				// this.indexRegister += x + 1;
 				break;
 
-			// FX65: Fills V0 to VX with values from memory starting at address I
+			// FX65 Fills V0 to VX with values from memory starting at address I
 			case 0x65:
 				for (let i = 0; i <= x; i++) {
 					this.vRegisters[i] = this.memory[this.indexRegister + i];
 				}
 
-				this.indexRegister += x + 1;
+				// Below depends on the interpreter
+				// this.indexRegister += x + 1;
 				break;
 		}
 
