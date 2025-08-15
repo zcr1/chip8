@@ -408,4 +408,44 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.programCounter).toBe(2);
 		expect(chip.vRegisters[14]).toBe(10);
 	});
+
+	test('FX15 Sets the delay timer to VX', () => {
+		chip.currentOpcode = 0xf015;
+		chip.vRegisters[0] = 40;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.delayTimer).toBe(40);
+	});
+
+	test('FX18 Sets the sound timer to VX', () => {
+		chip.currentOpcode = 0xf018;
+		chip.vRegisters[0] = 40;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.soundTimer).toBe(40);
+	});
+
+	test('FX1E Adds VX to I and stores carry bit in VF', () => {
+		chip.currentOpcode = 0xf11e;
+		chip.vRegisters[1] = 0x33;
+		chip.indexRegister = 0x01;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.indexRegister).toBe(0x34);
+		expect(chip.vRegisters[15]).toBe(0);
+
+		chip.vRegisters[1] = 0x01;
+		chip.indexRegister = 0xfff;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.indexRegister).toBe(0x1000);
+		expect(chip.vRegisters[15]).toBe(1);
+	});
 });

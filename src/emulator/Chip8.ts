@@ -419,7 +419,7 @@ export class Chip8 {
 				this.soundTimer = this.vRegisters[x];
 				break;
 
-			// FX1E Adds VX to I and stores carry bit in VF
+			// FX1E Adds VX to I and stores carry bit in VF if greater than 0xfff
 			case 0x1e:
 				if (this.indexRegister + this.vRegisters[x] > 0xfff) {
 					// carry bit
