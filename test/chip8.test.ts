@@ -448,4 +448,27 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.indexRegister).toBe(0x1000);
 		expect(chip.vRegisters[15]).toBe(1);
 	});
+
+	test('FX29 Sets I to the location of the sprite for the character in VX', () => {
+		chip.currentOpcode = 0xf229;
+		chip.vRegisters[2] = 0xc;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.indexRegister).toBe(60);
+	});
+
+	test('FX33 Stores the binary-coded decimal representation of VX', () => {
+		chip.currentOpcode = 0xf233;
+		chip.vRegisters[2] = 138;
+		chip.indexRegister = 55;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+		expect(chip.memory[chip.indexRegister]).toBe(1);
+		expect(chip.memory[chip.indexRegister + 1]).toBe(3);
+		expect(chip.memory[chip.indexRegister + 2]).toBe(8);
+	});
 });
