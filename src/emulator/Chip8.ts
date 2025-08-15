@@ -7,6 +7,7 @@ export class Chip8 {
 	drawFlag: boolean; // TODO needed?
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
+	inputs: boolean[];
 	jumpTable: Array<() => void>;
 	jumpTable8XYN: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
@@ -20,6 +21,7 @@ export class Chip8 {
 		this.drawFlag = true;
 		this.graphics = new Uint8Array(2048);
 		this.indexRegister = 0;
+		this.inputs = new Array(16).fill(false);
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
 		this.stack = new Uint16Array(16);
@@ -45,6 +47,7 @@ export class Chip8 {
 			this.opBNNN.bind(this),
 			this.opCXNN.bind(this),
 			this.opDXYN.bind(this),
+			this.opE000.bind(this),
 		];
 
 		// 8XYN op codes have a sub jump table with empty values for 8 through D
@@ -138,10 +141,10 @@ export class Chip8 {
 
 	// 3XNN Skips the next instruction if VX equals NN
 	op3XNN() {
-		const registerValue = this.getOpcodeX();
+		const x = this.getOpcodeX();
 		const opcodeValue = this.getOpcodeNN();
 
-		if (this.vRegisters[registerValue] === opcodeValue) {
+		if (this.vRegisters[x] === opcodeValue) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
@@ -150,10 +153,10 @@ export class Chip8 {
 
 	// 4XNN Skips the next instruction if VX does not equal NN
 	op4XNN() {
-		const registerValue = this.getOpcodeX();
+		const x = this.getOpcodeX();
 		const opcodeValue = this.getOpcodeNN();
 
-		if (this.vRegisters[registerValue] !== opcodeValue) {
+		if (this.vRegisters[x] !== opcodeValue) {
 			this.programCounter += 4;
 		} else {
 			this.programCounter += 2;
@@ -174,19 +177,19 @@ export class Chip8 {
 
 	// 6XNN Sets VX to NN
 	op6XNN() {
-		const registerValue = this.getOpcodeX();
+		const x = this.getOpcodeX();
 		const opcodeValue = this.getOpcodeNN();
 
-		this.vRegisters[registerValue] = opcodeValue;
+		this.vRegisters[x] = opcodeValue;
 		this.programCounter += 2;
 	}
 
 	// 7XNN Adds NN to VX
 	op7XNN() {
-		const registerValue = this.getOpcodeX();
+		const x = this.getOpcodeX();
 		const opcodeValue = this.getOpcodeNN();
 
-		this.vRegisters[registerValue] += opcodeValue;
+		this.vRegisters[x] += opcodeValue;
 		this.programCounter += 2;
 	}
 
@@ -329,8 +332,8 @@ export class Chip8 {
 
 	// Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels.
 	// Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed
-	// on the left) starting from memory location index register; If there is a collision then the pixel
-	// is unset and VF is set to 1, otherwise VF is 0
+	// on the left) starting from memory location index register. If there is a collision then the pixel
+	// is unset and VF is set to 1, otherwise VF is 0.
 	opDXYN() {
 		const x = this.vRegisters[this.getOpcodeX()];
 		const y = this.vRegisters[this.getOpcodeY()];
@@ -360,5 +363,18 @@ export class Chip8 {
 
 		// this.drawFlag = true;
 		this.programCounter += 2;
+	}
+
+	// EX9E Skip next instruction if key in VX is pressed
+	// EXA1 Skip next instruction if key in VX not pressed
+	opE000() {
+		const x = this.vRegisters[this.getOpcodeX()];
+		const opecodeValue = this.getOpcodeNN();
+
+		if (opecodeValue === 0x9e) {
+			this.programCounter += this.inputs[x] ? 4 : 2;
+		} else if (opecodeValue === 0xa1) {
+			this.programCounter += this.inputs[x] ? 2 : 4;
+		}
 	}
 }

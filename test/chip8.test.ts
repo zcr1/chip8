@@ -329,6 +329,7 @@ describe('Chip8 Opcode Tests', () => {
 		chip.runCurrentOpcode();
 
 		expect(chip.vRegisters[15]).toBe(1);
+		expect(chip.programCounter).toBe(2);
 
 		// Top row of the sprite at (10, 12)
 		expect(chip.graphics[SCREEN_WIDTH * 12 + 10]).toBe(0);
@@ -342,5 +343,43 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.graphics[SCREEN_WIDTH * 13 + 11]).toBe(0);
 		expect(chip.graphics[SCREEN_WIDTH * 13 + 12]).toBe(0);
 		expect(chip.graphics[SCREEN_WIDTH * 13 + 13]).toBe(1);
+	});
+
+	test('EX9E Skip next instruction if key in VX is pressed', () => {
+		chip.currentOpcode = 0xe19e;
+		chip.vRegisters[1] = 0xe;
+		chip.inputs[0xe] = true;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('EX9E Does not next instruction if key in VX is not pressed', () => {
+		chip.currentOpcode = 0xe19e;
+		chip.vRegisters[1] = 0xe;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
+	});
+
+	test('EXA1 Skip next instruction if key in VX is not pressed', () => {
+		chip.currentOpcode = 0xe1a1;
+		chip.vRegisters[1] = 0xe;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(4);
+	});
+
+	test('EXA1 Does not next instruction if key in VX pressed', () => {
+		chip.currentOpcode = 0xe1a1;
+		chip.vRegisters[1] = 0xe;
+		chip.inputs[0xe] = true;
+
+		chip.runCurrentOpcode();
+
+		expect(chip.programCounter).toBe(2);
 	});
 });
