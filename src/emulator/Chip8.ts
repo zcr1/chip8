@@ -321,7 +321,6 @@ export class Chip8 {
 	// 8XY6 Right shift VX, VF is set to least significant bit of VX before shift
 	op8XY6() {
 		const x = this.getOpcodeX();
-		const y = this.getOpcodeY();
 
 		// todo quirk
 		// this.vRegisters[x] = this.vRegisters[y];
@@ -477,8 +476,8 @@ export class Chip8 {
 				if (!keyPress) return;
 				break;
 
-			// FX0f Sets the delay timer to VX
-			case 0x0f:
+			// FX15 Sets the delay timer to VX
+			case 0x15:
 				this.delayTimer = this.vRegisters[x];
 				break;
 
