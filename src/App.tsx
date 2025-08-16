@@ -5,7 +5,7 @@ import './App.scss';
 import { useAppStore } from './store';
 import { Chip8 } from './emulator/Chip8';
 import { Renderer } from './emulator/Renderer';
-import { testRom2 } from './emulator/roms';
+import { testRom3 } from './emulator/roms';
 
 const App = () => {
 	const chip8 = useRef<Chip8>(null);
@@ -15,7 +15,7 @@ const App = () => {
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		chip8.current.loadRom(testRom2);
+		chip8.current.loadRom(testRom3);
 
 		renderer.current = new Renderer('root', 10, chip8.current);
 
