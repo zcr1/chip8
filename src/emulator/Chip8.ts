@@ -79,6 +79,10 @@ export class Chip8 {
 	}
 
 	start() {
+		if (this.running) {
+			return;
+		}
+
 		this.running = true;
 		this.update();
 	}
@@ -317,9 +321,16 @@ export class Chip8 {
 	// 8XY6 Right shift VX, VF is set to least significant bit of VX before shift
 	op8XY6() {
 		const x = this.getOpcodeX();
+		const y = this.getOpcodeY();
 
+		// todo quirk
+		// this.vRegisters[x] = this.vRegisters[y];
 		this.vRegisters[0xf] = this.vRegisters[x] & 0x1;
-		this.vRegisters[x] >>= 1;
+
+		if (x !== 0xf) {
+			this.vRegisters[x] >>= 1;
+		}
+
 		this.programCounter += 2;
 	}
 
@@ -350,7 +361,12 @@ export class Chip8 {
 		const x = this.getOpcodeX();
 
 		this.vRegisters[0xf] = this.vRegisters[x] >> 0x7;
-		this.vRegisters[x] <<= 1;
+
+		// When X === VF use the carry bit
+		if (x !== 0xf) {
+			this.vRegisters[x] <<= 1;
+		}
+
 		this.programCounter += 2;
 	}
 

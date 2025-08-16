@@ -36,6 +36,10 @@ export class Renderer {
 	}
 
 	start() {
+		if (this.running) {
+			return;
+		}
+
 		this.running = true;
 		this.update();
 	}
