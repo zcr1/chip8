@@ -1,6 +1,7 @@
 import typeface from './typeface';
 
 export const SCREEN_WIDTH = 64;
+// export const TIME_STEP = 1000 / 700; // 700 FPS
 
 export class Chip8 {
 	currentOpcode: number;
@@ -13,6 +14,7 @@ export class Chip8 {
 	jumpTable: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
 	programCounter: number;
+	running: boolean;
 	soundTimer: number;
 	stack: Uint16Array<ArrayBuffer>;
 	stackPointer: number;
@@ -21,7 +23,7 @@ export class Chip8 {
 	constructor() {
 		this.currentOpcode = 0;
 		this.delayTimer = 0;
-		this.drawFlag = true;
+		this.drawFlag = false;
 		this.graphics = new Uint8Array(2048);
 		this.indexRegister = 0;
 		this.inputs = new Array(16).fill(false);
@@ -31,6 +33,7 @@ export class Chip8 {
 		this.stack = new Uint16Array(16);
 		this.stackPointer = 0;
 		this.vRegisters = new Uint8Array(16);
+		this.running = false;
 
 		// Load font into memory
 		this.memory.set(typeface, 0);
@@ -75,6 +78,30 @@ export class Chip8 {
 		];
 	}
 
+	start() {
+		this.running = true;
+		this.update();
+		requestAnimationFrame(this.draw.bind(this));
+	}
+
+	stop() {
+		this.running = false;
+	}
+
+	// Core update loop
+	update() {
+		if (this.running) {
+			this.fetchNextOpcode();
+			this.runCurrentOpcode();
+
+			// todo not great
+			setTimeout(this.update.bind(this), 1);
+		}
+	}
+
+	// 60hz
+	timerTick() {}
+
 	fetchNextOpcode() {
 		this.currentOpcode = (this.memory[this.programCounter] << 8) | this.memory[this.programCounter + 1];
 	}
@@ -98,6 +125,13 @@ export class Chip8 {
 	clearStack() {
 		this.stack.fill(0);
 	}
+
+	// Loads rom into memory starting at 0x200
+	loadRom(rom: Uint8Array<ArrayBuffer>) {
+		this.memory.set(rom, 0x200);
+	}
+
+	draw() {}
 
 	/*
 	 ** Opcodes
@@ -365,7 +399,7 @@ export class Chip8 {
 			}
 		}
 
-		// this.drawFlag = true;
+		this.drawFlag = true;
 		this.programCounter += 2;
 	}
 
