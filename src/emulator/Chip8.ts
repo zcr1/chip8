@@ -275,13 +275,20 @@ export class Chip8 {
 		const x = this.getOpcodeX();
 		const y = this.getOpcodeY();
 
-		if (this.vRegisters[y] > 0xff - this.vRegisters[x]) {
+		const xValue = this.vRegisters[x];
+		const yValue = this.vRegisters[y];
+
+		if (xValue > 0xff - yValue) {
 			this.vRegisters[15] = 1;
 		} else {
 			this.vRegisters[15] = 0;
 		}
 
-		this.vRegisters[x] += this.vRegisters[y];
+		// When X === VF then we want the value to always be the carry bit
+		if (x !== 15) {
+			this.vRegisters[x] = xValue + yValue;
+		}
+
 		this.programCounter += 2;
 	}
 
@@ -290,13 +297,20 @@ export class Chip8 {
 		const x = this.getOpcodeX();
 		const y = this.getOpcodeY();
 
-		if (this.vRegisters[y] > this.vRegisters[x]) {
+		const xValue = this.vRegisters[x];
+		const yValue = this.vRegisters[y];
+
+		if (yValue > xValue) {
 			this.vRegisters[15] = 0;
 		} else {
 			this.vRegisters[15] = 1;
 		}
 
-		this.vRegisters[x] -= this.vRegisters[y];
+		// When X === VF then we want the value to always be the carry bit
+		if (x !== 15) {
+			this.vRegisters[x] = xValue - yValue;
+		}
+
 		this.programCounter += 2;
 	}
 

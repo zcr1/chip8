@@ -35,20 +35,18 @@ export class Renderer {
 		container.appendChild(this.canvas);
 	}
 
-	destroy() {
-		this.stop();
-		this.canvas.remove();
-	}
-
 	start() {
 		this.running = true;
 		this.update();
 	}
 
 	stop() {
-		if (this.animationFrame) {
-			window.cancelAnimationFrame(this.animationFrame);
-		}
+		this.running = false;
+	}
+
+	destroy() {
+		this.stop();
+		this.canvas.remove();
 	}
 
 	update() {
