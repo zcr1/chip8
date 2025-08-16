@@ -279,13 +279,13 @@ export class Chip8 {
 		const yValue = this.vRegisters[y];
 
 		if (xValue > 0xff - yValue) {
-			this.vRegisters[15] = 1;
+			this.vRegisters[0xf] = 1;
 		} else {
-			this.vRegisters[15] = 0;
+			this.vRegisters[0xf] = 0;
 		}
 
-		// When X === VF then we want the value to always be the carry bit
-		if (x !== 15) {
+		// When X === VF use the carry bit
+		if (x !== 0xf) {
 			this.vRegisters[x] = xValue + yValue;
 		}
 
@@ -301,13 +301,13 @@ export class Chip8 {
 		const yValue = this.vRegisters[y];
 
 		if (yValue > xValue) {
-			this.vRegisters[15] = 0;
+			this.vRegisters[0xf] = 0;
 		} else {
-			this.vRegisters[15] = 1;
+			this.vRegisters[0xf] = 1;
 		}
 
-		// When X === VF then we want the value to always be the carry bit
-		if (x !== 15) {
+		// When X === VF use the carry bit
+		if (x !== 0xf) {
 			this.vRegisters[x] = xValue - yValue;
 		}
 
@@ -318,7 +318,7 @@ export class Chip8 {
 	op8XY6() {
 		const x = this.getOpcodeX();
 
-		this.vRegisters[15] = this.vRegisters[x] & 0x1;
+		this.vRegisters[0xf] = this.vRegisters[x] & 0x1;
 		this.vRegisters[x] >>= 1;
 		this.programCounter += 2;
 	}
@@ -328,13 +328,20 @@ export class Chip8 {
 		const x = this.getOpcodeX();
 		const y = this.getOpcodeY();
 
-		if (this.vRegisters[x] > this.vRegisters[y]) {
-			this.vRegisters[15] = 0;
+		const xValue = this.vRegisters[x];
+		const yValue = this.vRegisters[y];
+
+		if (xValue > yValue) {
+			this.vRegisters[0xf] = 0;
 		} else {
-			this.vRegisters[15] = 1;
+			this.vRegisters[0xf] = 1;
 		}
 
-		this.vRegisters[x] = this.vRegisters[y] - this.vRegisters[x];
+		// When X === VF use the carry bit
+		if (x !== 0xf) {
+			this.vRegisters[x] = yValue - xValue;
+		}
+
 		this.programCounter += 2;
 	}
 
@@ -342,7 +349,7 @@ export class Chip8 {
 	op8XYE() {
 		const x = this.getOpcodeX();
 
-		this.vRegisters[15] = this.vRegisters[x] >> 0x7;
+		this.vRegisters[0xf] = this.vRegisters[x] >> 0x7;
 		this.vRegisters[x] <<= 1;
 		this.programCounter += 2;
 	}
@@ -390,7 +397,7 @@ export class Chip8 {
 		const height = this.currentOpcode & 0x000f;
 		let pixel = 0;
 
-		this.vRegisters[15] = 0;
+		this.vRegisters[0xf] = 0;
 
 		for (let row = 0; row < height; row++) {
 			pixel = this.memory[this.indexRegister + row];
@@ -402,7 +409,7 @@ export class Chip8 {
 
 					// Collision
 					if (this.graphics[pos] === 1) {
-						this.vRegisters[15] = 1;
+						this.vRegisters[0xf] = 1;
 					}
 
 					// Flip current pixel
@@ -454,8 +461,8 @@ export class Chip8 {
 				if (!keyPress) return;
 				break;
 
-			// FX15 Sets the delay timer to VX
-			case 0x15:
+			// FX0f Sets the delay timer to VX
+			case 0x0f:
 				this.delayTimer = this.vRegisters[x];
 				break;
 
@@ -468,9 +475,9 @@ export class Chip8 {
 			case 0x1e:
 				if (this.indexRegister + this.vRegisters[x] > 0xfff) {
 					// carry bit
-					this.vRegisters[15] = 1;
+					this.vRegisters[0xf] = 1;
 				} else {
-					this.vRegisters[15] = 0;
+					this.vRegisters[0xf] = 0;
 				}
 
 				this.indexRegister += this.vRegisters[x];
