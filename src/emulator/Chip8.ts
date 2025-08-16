@@ -18,7 +18,7 @@ export class Chip8 {
 	soundTimer: number;
 	stack: Uint16Array<ArrayBuffer>;
 	stackPointer: number;
-	vRegisters: Uint8Array<ArrayBuffer>; // registers V0...VF
+	vRegisters: Uint8Array<ArrayBuffer>;
 
 	constructor() {
 		this.currentOpcode = 0;
@@ -488,14 +488,15 @@ export class Chip8 {
 
 			// FX1E Adds VX to I and stores carry bit in VF if greater than 0xfff
 			case 0x1e:
-				if (this.indexRegister + this.vRegisters[x] > 0xfff) {
+				const value = this.vRegisters[x];
+				if (this.indexRegister + value > 0xfff) {
 					// carry bit
 					this.vRegisters[0xf] = 1;
 				} else {
 					this.vRegisters[0xf] = 0;
 				}
 
-				this.indexRegister += this.vRegisters[x];
+				this.indexRegister += value;
 				break;
 
 			// FX29 Sets I to the location of the sprite for the character in VX.
