@@ -1,12 +1,13 @@
 import typeface from './typeface';
 
 export const SCREEN_WIDTH = 64;
+export const SCREEN_HEIGHT = 32;
 // export const TIME_STEP = 1000 / 700; // 700 FPS
 
 export class Chip8 {
 	currentOpcode: number;
 	delayTimer: number;
-	drawFlag: boolean; // TODO needed?
+	drawFlag: boolean;
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
 	inputs: boolean[];
@@ -81,7 +82,6 @@ export class Chip8 {
 	start() {
 		this.running = true;
 		this.update();
-		requestAnimationFrame(this.draw.bind(this));
 	}
 
 	stop() {
@@ -130,8 +130,6 @@ export class Chip8 {
 	loadRom(rom: Uint8Array<ArrayBuffer>) {
 		this.memory.set(rom, 0x200);
 	}
-
-	draw() {}
 
 	/*
 	 ** Opcodes

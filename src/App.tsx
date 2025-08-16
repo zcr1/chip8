@@ -4,19 +4,30 @@ import './App.scss';
 
 import { useAppStore } from './store';
 import { Chip8 } from './emulator/Chip8';
-import { testRom } from './emulator/roms';
+import { Renderer } from './emulator/Renderer';
+import { testRom1 } from './emulator/roms';
 
 const App = () => {
 	const chip8 = useRef<Chip8>(null);
+	const renderer = useRef<Renderer>(null);
 	// const bears = useAppStore(state => state.bears);
 	// const incrementBears = useAppStore(state => state.increase);
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		chip8.current.loadRom(testRom);
+		chip8.current.loadRom(testRom1);
+
+		renderer.current = new Renderer('root', 10, chip8.current);
+
+		return () => {
+			renderer.current?.destroy();
+			chip8.current?.stop();
+		};
 	}, []);
 
 	function start() {
+		console.log('Starting emulator');
+		renderer.current?.start();
 		chip8.current?.start();
 	}
 
