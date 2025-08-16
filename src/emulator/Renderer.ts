@@ -63,9 +63,9 @@ export class Renderer {
 
 			// Draw pixels
 			this.context.fillStyle = PIXEL_COLOR;
-			for (let y = 0; y < 32; y++) {
-				for (let x = 0; x < 64; x++) {
-					const pos = x + y * 64;
+			for (let y = 0; y < SCREEN_HEIGHT; y++) {
+				for (let x = 0; x < SCREEN_WIDTH; x++) {
+					const pos = x + y * SCREEN_WIDTH;
 
 					if (this.chip8.graphics[pos]) {
 						this.context.fillRect(x * this.pixelSize, y * this.pixelSize, this.pixelSize, this.pixelSize);

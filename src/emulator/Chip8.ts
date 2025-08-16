@@ -2,7 +2,6 @@ import typeface from './typeface';
 
 export const SCREEN_WIDTH = 64;
 export const SCREEN_HEIGHT = 32;
-// export const TIME_STEP = 1000 / 700; // 700 FPS
 
 export class Chip8 {
 	currentOpcode: number;
