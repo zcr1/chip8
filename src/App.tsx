@@ -1,22 +1,20 @@
 import { useEffect, useRef } from 'react';
 
-import './App.scss';
-
 import { Chip8 } from './emulator/Chip8';
 import { Renderer } from './emulator/Renderer';
-import { flagsTest } from './roms/testRoms';
+import { keypadTest } from './roms/testRoms';
 import { InputHandler } from './emulator/InputHandler';
+
+import './App.scss';
 
 const App = () => {
 	const chip8 = useRef<Chip8>(null);
 	const renderer = useRef<Renderer>(null);
 	const inputHandler = useRef<InputHandler>(null);
-	// const bears = useAppStore(state => state.bears);
-	// const incrementBears = useAppStore(state => state.increase);
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		chip8.current.loadRom(flagsTest);
+		chip8.current.loadRom(keypadTest);
 
 		renderer.current = new Renderer('root', 10, chip8.current);
 		inputHandler.current = new InputHandler(chip8.current);

@@ -2,6 +2,7 @@ import typeface from './typeface';
 
 export const SCREEN_WIDTH = 64;
 export const SCREEN_HEIGHT = 32;
+const TIMER_TICK_RATE = (1 / 60) * 1000; // 60 mhz
 
 export class Chip8 {
 	currentOpcode: number;
@@ -9,9 +10,10 @@ export class Chip8 {
 	drawFlag: boolean;
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
-	keypad: boolean[];
 	jumpTable8XYN: Array<() => void>;
 	jumpTable: Array<() => void>;
+	keypad: boolean[];
+	lastDelayTimeStep: number;
 	memory: Uint8Array<ArrayBuffer>;
 	programCounter: number;
 	running: boolean;
@@ -27,13 +29,14 @@ export class Chip8 {
 		this.graphics = new Uint8Array(2048);
 		this.indexRegister = 0;
 		this.keypad = new Array(16).fill(false);
+		this.lastDelayTimeStep = 0;
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
+		this.running = false;
 		this.soundTimer = 0;
 		this.stack = new Uint16Array(16);
 		this.stackPointer = 0;
 		this.vRegisters = new Uint8Array(16);
-		this.running = false;
 
 		// Load font into memory
 		this.memory.set(typeface, 0);
@@ -83,6 +86,7 @@ export class Chip8 {
 			return;
 		}
 
+		this.lastDelayTimeStep = Date.now();
 		this.running = true;
 		this.update();
 	}
@@ -94,6 +98,13 @@ export class Chip8 {
 	// Core update loop
 	update() {
 		if (this.running) {
+			const now = Date.now();
+			if (now - this.lastDelayTimeStep > TIMER_TICK_RATE) {
+				this.lastDelayTimeStep = now;
+				this.delayTimer = Math.max(0, this.delayTimer - 1);
+				this.soundTimer = Math.max(0, this.soundTimer - 1);
+			}
+
 			this.fetchNextOpcode();
 			this.runCurrentOpcode();
 
