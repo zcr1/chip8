@@ -9,7 +9,7 @@ export class Chip8 {
 	drawFlag: boolean;
 	graphics: Uint8Array<ArrayBuffer>;
 	indexRegister: number;
-	inputs: boolean[];
+	keypad: boolean[];
 	jumpTable8XYN: Array<() => void>;
 	jumpTable: Array<() => void>;
 	memory: Uint8Array<ArrayBuffer>;
@@ -26,7 +26,7 @@ export class Chip8 {
 		this.drawFlag = false;
 		this.graphics = new Uint8Array(2048);
 		this.indexRegister = 0;
-		this.inputs = new Array(16).fill(false);
+		this.keypad = new Array(16).fill(false);
 		this.memory = new Uint8Array(4096);
 		this.programCounter = 0;
 		this.soundTimer = 0;
@@ -444,9 +444,9 @@ export class Chip8 {
 		const opecodeValue = this.getOpcodeNN();
 
 		if (opecodeValue === 0x9e) {
-			this.programCounter += this.inputs[x] ? 4 : 2;
+			this.programCounter += this.keypad[x] ? 4 : 2;
 		} else if (opecodeValue === 0xa1) {
-			this.programCounter += this.inputs[x] ? 2 : 4;
+			this.programCounter += this.keypad[x] ? 2 : 4;
 		}
 	}
 
@@ -466,7 +466,7 @@ export class Chip8 {
 				let keyPress = false;
 
 				for (let i = 0; i < 16; i++) {
-					if (this.inputs[i]) {
+					if (this.keypad[i]) {
 						keyPress = true;
 						this.vRegisters[x] = i;
 					}

@@ -348,7 +348,7 @@ describe('Chip8 Opcode Tests', () => {
 	test('EX9E Skip next instruction if key in VX is pressed', () => {
 		chip.currentOpcode = 0xe19e;
 		chip.vRegisters[1] = 0xe;
-		chip.inputs[0xe] = true;
+		chip.keypad[0xe] = true;
 
 		chip.runCurrentOpcode();
 
@@ -376,7 +376,7 @@ describe('Chip8 Opcode Tests', () => {
 	test('EXA1 Does not next instruction if key in VX pressed', () => {
 		chip.currentOpcode = 0xe1a1;
 		chip.vRegisters[1] = 0xe;
-		chip.inputs[0xe] = true;
+		chip.keypad[0xe] = true;
 
 		chip.runCurrentOpcode();
 
@@ -401,7 +401,7 @@ describe('Chip8 Opcode Tests', () => {
 		expect(chip.programCounter).toBe(0);
 		expect(chip.vRegisters[14]).toBe(0);
 
-		chip.inputs[10] = true;
+		chip.keypad[10] = true;
 
 		chip.runCurrentOpcode();
 
