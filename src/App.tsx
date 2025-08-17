@@ -4,7 +4,7 @@ import { Chip8 } from './emulator/Chip8';
 import { Renderer } from './emulator/Renderer';
 import { InputHandler } from './emulator/InputHandler';
 import { AudioHandler } from './emulator/AudioHandler';
-import { beepTest } from './roms/testRoms';
+import { brix } from './roms/roms';
 
 import './App.scss';
 
@@ -16,7 +16,7 @@ const App = () => {
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		chip8.current.loadRom(beepTest);
+		chip8.current.loadRom(brix);
 
 		renderer.current = new Renderer('root', 10, chip8.current);
 		inputHandler.current = new InputHandler(chip8.current);
