@@ -43,7 +43,7 @@ export class InputHandler {
 	}
 
 	handleKey = (e: KeyboardEvent) => {
-		if (this.chip8.running && INPUT_MAP[e.key]) {
+		if (this.chip8.running && INPUT_MAP[e.key] !== undefined) {
 			this.chip8.keypad[INPUT_MAP[e.key]] = e.type === 'keydown';
 		}
 	};

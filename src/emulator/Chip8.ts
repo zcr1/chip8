@@ -113,9 +113,6 @@ export class Chip8 {
 		}
 	}
 
-	// 60hz
-	timerTick() {}
-
 	fetchNextOpcode() {
 		this.currentOpcode = (this.memory[this.programCounter] << 8) | this.memory[this.programCounter + 1];
 	}
