@@ -92,9 +92,20 @@ export class Chip8 {
 	}
 
 	stop() {
+		this.clearGraphics();
+		this.clearMemory();
+		this.clearStack();
+		this.clearVRegisters();
+		this.currentOpcode = 0;
+		this.delayTimer = 0;
+		this.drawFlag = false;
+		this.indexRegister = 0;
+		this.programCounter = 0;
 		this.running = false;
+		this.running = false;
+		this.soundTimer = 0;
+		this.stackPointer = 0;
 	}
-
 	// Core update loop
 	update() {
 		if (this.running) {
@@ -156,7 +167,7 @@ export class Chip8 {
 		return (this.currentOpcode & 0x00f0) >> 4;
 	}
 
-	// Returns the NN value in an opcode i.e. 0x4311 => 0x11
+	// Returns the NN value in an opcode i.e. 0x4312 => 0x12
 	getOpcodeNN() {
 		return this.currentOpcode & 0x00ff;
 	}
