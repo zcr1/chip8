@@ -1,23 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Chip8 } from './emulator/Chip8';
 import { Renderer } from './emulator/Renderer';
 import { InputHandler } from './emulator/InputHandler';
 import { AudioHandler } from './emulator/AudioHandler';
-import { brix } from './roms/roms';
+import { roms } from './roms/roms';
 
 import './App.scss';
+
+const RomSelector = ({ currentRom, setRom }) => {
+	return (
+		<select name="roms" value={}>
+			<option value="">Select Rom</option>
+		</select>
+	);
+};
 
 const App = () => {
 	const chip8 = useRef<Chip8>(null);
 	const renderer = useRef<Renderer>(null);
 	const inputHandler = useRef<InputHandler>(null);
 	const audioHandler = useRef<AudioHandler>(null);
+	const [currentRom, setRom] = useState<string>();
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		chip8.current.loadRom(brix);
-
 		renderer.current = new Renderer('root', 10, chip8.current);
 		inputHandler.current = new InputHandler(chip8.current);
 		audioHandler.current = new AudioHandler('root', chip8.current);
@@ -30,6 +37,14 @@ const App = () => {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (!currentRom) {
+			return;
+		}
+
+		chip8.current?.loadRom(roms[currentRom]);
+	}, [currentRom]);
+
 	function start() {
 		console.log('Starting emulator');
 		renderer.current?.start();
@@ -41,6 +56,7 @@ const App = () => {
 	return (
 		<div className="content">
 			<button onClick={start}>Start</button>
+			<RomSelector />
 		</div>
 	);
 };

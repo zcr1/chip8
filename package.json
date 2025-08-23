@@ -12,7 +12,6 @@
   "dependencies": {
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@rsbuild/core": "^1.4.13",
