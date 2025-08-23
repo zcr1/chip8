@@ -22,6 +22,8 @@ export class Chip8 {
 	stackPointer: number;
 	vRegisters: Uint8Array<ArrayBuffer>;
 
+	updateTimeout?: NodeJS.Timeout;
+
 	constructor() {
 		this.currentOpcode = 0;
 		this.delayTimer = 0;
@@ -92,6 +94,7 @@ export class Chip8 {
 	}
 
 	stop() {
+		clearTimeout(this.updateTimeout);
 		this.clearGraphics();
 		this.clearMemory();
 		this.clearStack();
@@ -101,7 +104,6 @@ export class Chip8 {
 		this.drawFlag = false;
 		this.indexRegister = 0;
 		this.programCounter = 0;
-		this.running = false;
 		this.running = false;
 		this.soundTimer = 0;
 		this.stackPointer = 0;
@@ -119,8 +121,7 @@ export class Chip8 {
 			this.fetchNextOpcode();
 			this.runCurrentOpcode();
 
-			// todo not great
-			setTimeout(this.update.bind(this), 1);
+			this.updateTimeout = setTimeout(this.update.bind(this), 1);
 		}
 	}
 
