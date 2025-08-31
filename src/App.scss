@@ -1,35 +1,18 @@
 body {
-	margin: 0;
-	color: #fff;
-	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 	background-image: linear-gradient(to bottom, #020917, #101725);
-
+	color: #fff;
 	display: flex;
-	min-height: 100vh;
-	line-height: 1.1;
-	text-align: center;
 	flex-direction: column;
+	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
 	justify-content: center;
+	line-height: 1.1;
+	margin: 0;
+	min-height: 100vh;
+	text-align: center;
 }
 
 .content {
-	// display: flex;
-	// min-height: 100vh;
-	// line-height: 1.1;
-	// text-align: center;
-	// flex-direction: column;
-	// justify-content: center;
-}
-
-.content h1 {
-	font-size: 3.6rem;
-	font-weight: 700;
-}
-
-.content p {
-	font-size: 1.2rem;
-	font-weight: 400;
-	opacity: 0.5;
+	margin-top: 1em;
 }
 
 canvas {

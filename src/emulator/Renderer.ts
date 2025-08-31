@@ -32,7 +32,7 @@ export class Renderer {
 			throw new Error(`Missing canvas container ${containerId}`);
 		}
 
-		container.appendChild(this.canvas);
+		container.prepend(this.canvas);
 	}
 
 	start() {

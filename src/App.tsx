@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Chip8 } from './emulator/Chip8';
 import { Renderer } from './emulator/Renderer';
@@ -42,7 +42,6 @@ const App = () => {
 		};
 	}, []);
 
-	// todo engine class?
 	function start() {
 		if (!currentRom) {
 			return;
