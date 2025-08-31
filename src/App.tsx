@@ -55,10 +55,11 @@ const App = () => {
 	const inputHandler = useRef<InputHandler>(null);
 	const audioHandler = useRef<AudioHandler>(null);
 	const [currentRom, setRom] = useState<string>();
+	const [currentKeyboardRom, setKeyboardRom] = useState<string>();
 
 	useEffect(() => {
 		chip8.current = new Chip8();
-		renderer.current = new Renderer('root', 10, chip8.current);
+		renderer.current = new Renderer('root', 12, chip8.current);
 		inputHandler.current = new InputHandler(chip8.current);
 		audioHandler.current = new AudioHandler('root', chip8.current);
 
@@ -75,6 +76,7 @@ const App = () => {
 			return;
 		}
 
+		setKeyboardRom(currentRom);
 		document.getElementsByTagName('canvas')[0]?.focus();
 
 		chip8.current?.stop();
@@ -90,13 +92,15 @@ const App = () => {
 		<div className="content">
 			<ViewGithubLink />
 
-			<KeyboardInputs currentRom={currentRom} />
+			<KeyboardInputs currentRom={currentKeyboardRom} />
 
-			<button id="start-button" onClick={start}>
-				Start
-			</button>
+			<div>
+				<button id="start-button" onClick={start}>
+					Start
+				</button>
 
-			<RomSelector currentRom={currentRom} setRom={setRom} />
+				<RomSelector currentRom={currentRom} setRom={setRom} />
+			</div>
 		</div>
 	);
 };
