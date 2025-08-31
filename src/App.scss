@@ -14,6 +14,10 @@ body {
 	text-align: center;
 }
 
+canvas:focus {
+	outline: none;
+}
+
 .canvas-stopped {
 	background-color: #22232a;
 }

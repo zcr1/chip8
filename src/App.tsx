@@ -9,7 +9,7 @@ import { roms } from './roms/roms';
 import './App.scss';
 
 const KEYBOARD_INPUTS: Record<string, Record<string, string>> = {
-	Brix: { w: 'move left', e: 'move right' },
+	Brix: { q: 'move left', e: 'move right' },
 	Tetris: { q: 'rotate piece', w: 'move left', e: 'move right', a: 'soft drop' },
 	UFO: { q: 'shoot northwest', w: 'shoot north', e: 'shoot northeast' },
 };

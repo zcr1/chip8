@@ -20,6 +20,7 @@ export class Renderer {
 		this.canvas.width = SCREEN_WIDTH * pixelSize;
 		this.canvas.height = SCREEN_HEIGHT * pixelSize;
 		this.canvas.className = 'canvas-stopped';
+		this.canvas.tabIndex = -1;
 
 		const ctx = this.canvas.getContext('2d');
 		if (!ctx) {
