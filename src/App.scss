@@ -1,5 +1,8 @@
+$blue: #306daf;
+$blue-hover: #1360b2;
+
 body {
-	background-image: linear-gradient(to bottom, #020917, #1a1a21);
+	background-image: linear-gradient(to bottom, #020917, #0f0f10);
 	color: #fff;
 	display: flex;
 	flex-direction: column;
@@ -21,16 +24,31 @@ body {
 }
 
 .content {
+	display: flex;
 	margin-top: 1em;
+	justify-content: center;
 }
 
-.rom-selector {
-	width: 120px;
+#rom-selector {
+	background-color: $blue;
+	border-radius: 5px;
+	border: none;
+	color: #ffffff;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
 	height: 30px;
+	padding: 0 5px;
+	transition: background-color 0.3s ease, box-shadow 0.2s ease;
+	width: 120px;
 }
 
-.start-button {
-	background-color: #306daf;
+#rom-selector:hover {
+	background-color: $blue-hover;
+}
+
+#start-button {
+	background-color: $blue;
 	border-radius: 5px;
 	border: none;
 	color: #fff;
@@ -43,10 +61,6 @@ body {
 	width: 120px;
 }
 
-.start-button:active {
-	background-color: #004085;
-}
-
-.start-button:hover {
-	background-color: #0056b3;
+#start-button:hover {
+	background-color: $blue-hover;
 }

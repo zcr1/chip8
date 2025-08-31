@@ -10,7 +10,7 @@ import './App.scss';
 
 const RomSelector = ({ currentRom, setRom }: { currentRom?: string; setRom(rom: string): void }) => {
 	return (
-		<select className="rom-selector" name="roms" value={currentRom} onChange={e => setRom(e.target.value)}>
+		<select id="rom-selector" name="roms" value={currentRom} onChange={e => setRom(e.target.value)}>
 			<option value="">Select Rom</option>
 			{Object.keys(roms).map(rom => (
 				<option value={rom} key={rom}>
@@ -58,7 +58,7 @@ const App = () => {
 
 	return (
 		<div className="content">
-			<button className="start-button" onClick={start}>
+			<button id="start-button" onClick={start}>
 				Start
 			</button>
 			<RomSelector currentRom={currentRom} setRom={setRom} />
