@@ -19,6 +19,7 @@ export class Renderer {
 		this.canvas = document.createElement('canvas');
 		this.canvas.width = SCREEN_WIDTH * pixelSize;
 		this.canvas.height = SCREEN_HEIGHT * pixelSize;
+		this.canvas.className = 'canvas-stopped';
 
 		const ctx = this.canvas.getContext('2d');
 		if (!ctx) {
@@ -39,6 +40,8 @@ export class Renderer {
 		if (this.running) {
 			return;
 		}
+
+		this.canvas.className = 'canvas-started';
 
 		this.running = true;
 		this.update();

@@ -1,5 +1,5 @@
 body {
-	background-image: linear-gradient(to bottom, #020917, #101725);
+	background-image: linear-gradient(to bottom, #020917, #1a1a21);
 	color: #fff;
 	display: flex;
 	flex-direction: column;
@@ -11,8 +11,13 @@ body {
 	text-align: center;
 }
 
-canvas {
-	box-shadow: 0 0px 2px 1px #ebebeb;
+.canvas-stopped {
+	background-color: #1f2029;
+}
+
+.canvas-started {
+	background-color: #282a36;
+	box-shadow: 0 0px 5px 1px #ebebeb;
 }
 
 .content {
@@ -25,6 +30,7 @@ canvas {
 }
 
 .start-button {
+	cursor: pointer;
 	margin-right: 1em;
 	width: 120px;
 	height: 30px;
