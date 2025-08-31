@@ -1,5 +1,6 @@
 $blue: #427ab8;
 $blue-hover: #1360b2;
+$text-color: #ddd;
 
 body {
 	background-image: linear-gradient(to bottom, #020917, #0f0f10);
@@ -35,7 +36,7 @@ canvas:focus {
 }
 
 #keyboard-inputs {
-	color: #ddd;
+	color: $text-color;
 	display: flex;
 	font-size: 14px;
 	gap: 20px;
@@ -80,7 +81,7 @@ canvas:focus {
 }
 
 #view-github-link {
-	color: #ddd;
+	color: $text-color;
 	position: absolute;
 	right: 50px;
 	text-decoration: none;
@@ -91,7 +92,7 @@ canvas:focus {
 	}
 
 	path {
-		fill: #ddd;
+		fill: $text-color;
 	}
 }
 
@@ -99,6 +100,6 @@ canvas:focus {
 	color: #fff;
 
 	path {
-		fill: #ddd;
+		fill: $text-color;
 	}
 }
