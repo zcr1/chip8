@@ -64,3 +64,27 @@ body {
 #start-button:hover {
 	background-color: $blue-hover;
 }
+
+#view-github-link {
+	color: #ddd;
+	position: absolute;
+	right: 50px;
+	text-decoration: none;
+	top: 10px;
+
+	svg {
+		margin-left: 8px;
+	}
+
+	path {
+		fill: #ddd;
+	}
+}
+
+#view-github-link:hover {
+	color: #fff;
+
+	path {
+		fill: #ddd;
+	}
+}
