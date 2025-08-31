@@ -8,6 +8,12 @@ import { roms } from './roms/roms';
 
 import './App.scss';
 
+const KEYBOARD_INPUTS: Record<string, Record<string, string>> = {
+	Brix: { w: 'move left', e: 'move right' },
+	Tetris: { q: 'rotate piece', w: 'move left', e: 'move right', a: 'soft drop' },
+	UFO: { q: 'shoot northwest', w: 'shoot north', e: 'shoot northeast' },
+};
+
 const RomSelector = ({ currentRom, setRom }: { currentRom?: string; setRom(rom: string): void }) => {
 	return (
 		<select id="rom-selector" name="roms" value={currentRom} onChange={e => setRom(e.target.value)}>
@@ -29,6 +35,19 @@ const ViewGithubLink = () => (
 		</svg>
 	</a>
 );
+
+const KeyboardInputs = ({ currentRom }: { currentRom?: string }) => {
+	return (
+		<div id="keyboard-inputs">
+			{currentRom &&
+				Object.entries(KEYBOARD_INPUTS[currentRom]).map(([key, description]) => (
+					<span>
+						<b>{key}</b> {description}
+					</span>
+				))}
+		</div>
+	);
+};
 
 const App = () => {
 	const chip8 = useRef<Chip8>(null);
@@ -56,6 +75,8 @@ const App = () => {
 			return;
 		}
 
+		document.getElementsByTagName('canvas')[0]?.focus();
+
 		chip8.current?.stop();
 		chip8.current?.loadRom(roms[currentRom]);
 
@@ -68,9 +89,13 @@ const App = () => {
 	return (
 		<div className="content">
 			<ViewGithubLink />
+
+			<KeyboardInputs currentRom={currentRom} />
+
 			<button id="start-button" onClick={start}>
 				Start
 			</button>
+
 			<RomSelector currentRom={currentRom} setRom={setRom} />
 		</div>
 	);

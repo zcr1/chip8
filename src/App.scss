@@ -24,9 +24,16 @@ body {
 }
 
 .content {
-	display: flex;
-	margin-top: 2em;
 	justify-content: center;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	margin-top: 4em;
+}
+
+#keyboard-inputs {
+	color: #ddd;
+	font-size: 14px;
 }
 
 #rom-selector {
