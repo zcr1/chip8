@@ -11,10 +11,21 @@ body {
 	text-align: center;
 }
 
+canvas {
+	box-shadow: 0 0px 2px 1px #ebebeb;
+}
+
 .content {
 	margin-top: 1em;
 }
 
-canvas {
-	border: 1px solid #fff;
+.rom-selector {
+	width: 120px;
+	height: 30px;
+}
+
+.start-button {
+	margin-right: 1em;
+	width: 120px;
+	height: 30px;
 }

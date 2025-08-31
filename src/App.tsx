@@ -10,8 +10,7 @@ import './App.scss';
 
 const RomSelector = ({ currentRom, setRom }: { currentRom?: string; setRom(rom: string): void }) => {
 	return (
-		<select name="roms" value={currentRom} onChange={e => setRom(e.target.value)}>
-			<option value="">Select Rom</option>
+		<select className="rom-selector" name="roms" value={currentRom} onChange={e => setRom(e.target.value)}>
 			{Object.keys(roms).map(rom => (
 				<option value={rom} key={rom}>
 					{rom}
@@ -26,7 +25,7 @@ const App = () => {
 	const renderer = useRef<Renderer>(null);
 	const inputHandler = useRef<InputHandler>(null);
 	const audioHandler = useRef<AudioHandler>(null);
-	const [currentRom, setRom] = useState<string>();
+	const [currentRom, setRom] = useState<string>(Object.keys(roms)[0]);
 
 	useEffect(() => {
 		chip8.current = new Chip8();
@@ -58,7 +57,9 @@ const App = () => {
 
 	return (
 		<div className="content">
-			<button onClick={start}>Start</button>
+			<button className="start-button" onClick={start}>
+				Start
+			</button>
 			<RomSelector currentRom={currentRom} setRom={setRom} />
 		</div>
 	);

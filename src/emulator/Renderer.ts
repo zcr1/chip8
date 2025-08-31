@@ -2,7 +2,7 @@ import { SCREEN_WIDTH, SCREEN_HEIGHT } from './Chip8';
 import { Chip8 } from './Chip8';
 
 const BACKGROUND_COLOR = '#282A36';
-const PIXEL_COLOR = '#6272A4';
+const PIXEL_COLOR = '#667dc2ff';
 
 export class Renderer {
 	animationFrame?: number;
