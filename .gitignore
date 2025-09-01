@@ -5,12 +5,9 @@
 
 # Dist
 node_modules
-dist/
 
 # Profile
 .rspack-profile-*/
 
 # IDE
 .vscode/*
-!.vscode/extensions.json
-.idea
