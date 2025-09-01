@@ -1,36 +1,16 @@
-# Rsbuild project
+# Chip8 Emulator
 
-## Setup
+http://zcr1.github.io/chip8/
 
-Install the dependencies:
+## Overview
 
-```bash
-pnpm install
-```
+CHIP-8 is an interpreted programming language that runs on a CHIP-8 virtual machine. It was developed in the 1970's for easily programmable games. This emulator is written in Typescript and rendered in Canvas.
 
-## Get started
+## Specs
 
-Start the dev server, and the app will be available at [http://localhost:3000](http://localhost:3000).
-
-```bash
-pnpm dev
-```
-
-Build the app for production:
-
-```bash
-pnpm build
-```
-
-Preview the production build locally:
-
-```bash
-pnpm preview
-```
-
-## Learn more
-
-To learn more about Rsbuild, check out the following resources:
-
-- [Rsbuild documentation](https://rsbuild.rs) - explore Rsbuild features and APIs.
-- [Rsbuild GitHub repository](https://github.com/web-infra-dev/rsbuild) - your feedback and contributions are welcome!
+- 4kB memory
+- 16 8-bit data registers
+- 64 byte stack
+- 64x32 monochrome display
+- 35 opcodes
+- 16 key hex keypad
