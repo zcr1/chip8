@@ -1,4 +1,4 @@
-# Chip8 Emulator
+# CHIP-8 Emulator
 
 http://zcr1.github.io/chip8/
 
