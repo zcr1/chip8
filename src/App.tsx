@@ -5,6 +5,7 @@ import { Renderer } from './emulator/Renderer';
 import { InputHandler } from './emulator/InputHandler';
 import { AudioHandler } from './emulator/AudioHandler';
 import { roms } from './roms/roms';
+import { useGTM } from './useGTM';
 
 import './App.scss';
 
@@ -12,6 +13,19 @@ const KEYBOARD_INPUTS: Record<string, Record<string, string>> = {
 	Brix: { q: 'move left', e: 'move right' },
 	Tetris: { q: 'rotate piece', w: 'move left', e: 'move right', a: 'soft drop' },
 	UFO: { q: 'shoot northwest', w: 'shoot north', e: 'shoot northeast' },
+};
+
+const KeyboardInputs = ({ currentRom }: { currentRom?: string }) => {
+	return (
+		<div id="keyboard-inputs">
+			{currentRom &&
+				Object.entries(KEYBOARD_INPUTS[currentRom]).map(([key, description]) => (
+					<span>
+						<b>{key}</b> {description}
+					</span>
+				))}
+		</div>
+	);
 };
 
 const RomSelector = ({ currentRom, setRom }: { currentRom?: string; setRom(rom: string): void }) => {
@@ -36,20 +50,8 @@ const ViewGithubLink = () => (
 	</a>
 );
 
-const KeyboardInputs = ({ currentRom }: { currentRom?: string }) => {
-	return (
-		<div id="keyboard-inputs">
-			{currentRom &&
-				Object.entries(KEYBOARD_INPUTS[currentRom]).map(([key, description]) => (
-					<span>
-						<b>{key}</b> {description}
-					</span>
-				))}
-		</div>
-	);
-};
-
 const App = () => {
+	useGTM();
 	const chip8 = useRef<Chip8>(null);
 	const renderer = useRef<Renderer>(null);
 	const inputHandler = useRef<InputHandler>(null);

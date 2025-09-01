@@ -15,6 +15,15 @@ export default defineConfig({
 				},
 				head: true,
 			},
+			{
+				tag: 'script',
+				attrs: {
+					src: 'https://www.googletagmanager.com/gtag/js?id=G-ZT5KEBKGMT"',
+					type: 'text/javascript',
+					async: true,
+				},
+				head: true,
+			},
 		],
 	},
 });
