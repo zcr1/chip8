@@ -4,6 +4,11 @@ import { pluginSass } from '@rsbuild/plugin-sass';
 
 export default defineConfig({
 	plugins: [pluginSass(), pluginReact()],
+	output: {
+		distPath: {
+			root: './',
+		},
+	},
 	html: {
 		title: 'Chip8 Emulator',
 		tags: [
