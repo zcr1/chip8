@@ -8,7 +8,7 @@ export default defineConfig({
 		assetPrefix: '/chip8/',
 	},
 	html: {
-		title: 'Chip8 Emulator',
+		title: 'CHIP-8 Emulator',
 		tags: [
 			{
 				tag: 'link',
